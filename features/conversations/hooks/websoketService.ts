@@ -33,8 +33,15 @@ class WebSocketManager {
     return WebSocketManager.instance;
   }
 
+  private shouldReconnect(): boolean {
+    return (
+      !this.connectionClosedIntentionally &&
+      this.reconnectAttempts < this.maxReconnectAttempts
+    );
+  }
+
   public connect() {
-    if (this.socket) return;
+    if (this.socket && this.socket.readyState === WebSocket.CONNECTING) return;
 
     this.connectionClosedIntentionally = false;
 
@@ -68,10 +75,7 @@ class WebSocketManager {
       this.cleanup();
       store.dispatch(setConnectionStatus("disconnected"));
 
-      if (
-        !event.wasClean &&
-        this.reconnectAttempts < this.maxReconnectAttempts
-      ) {
+      if (this.shouldReconnect()) {
         const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000);
         console.log(`Reconnecting in ${delay}ms...`);
         setTimeout(() => this.connect(), delay);
@@ -132,12 +136,16 @@ class WebSocketManager {
 
   public disconnect() {
     this.connectionClosedIntentionally = true;
-    this.cleanup();
-    store.dispatch(setConnectionStatus("disconnected"));
-    if (this.socket) {
+    if (
+      this.socket &&
+      (this.socket.readyState === WebSocket.OPEN ||
+        this.socket.readyState === WebSocket.CONNECTING)
+    ) {
       this.socket.close(1000, "User initiated disconnect");
-      this.socket = null;
     }
+    this.cleanup();
+    this.socket = null;
+    store.dispatch(setConnectionStatus("disconnected"));
   }
 
   private startHeartbeat(): void {

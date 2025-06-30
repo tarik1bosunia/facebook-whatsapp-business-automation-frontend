@@ -141,12 +141,12 @@ const ConversationItem = ({ conversation, isSelected, onSelect }: ConversationIt
           <div className="flex justify-between items-start mb-1">
             <span className="font-medium truncate">{conversation.customer.name}</span>
             <span className="text-xs text-muted-foreground">
-              {formatDjangoDateTime.toFullString(conversation?.lastMessage.time)}
+              {formatDjangoDateTime.toFullString(conversation.lastMessage?.time)}
             </span>
           </div>
           <div className="flex justify-between items-center">
             <p className="text-sm text-muted-foreground truncate max-w-[180px]">
-              {conversation.lastMessage.text}
+              {conversation.lastMessage?.text}
             </p>
             {conversation.unreadCount > 0 && (
               <Badge variant="default" className="ml-2">

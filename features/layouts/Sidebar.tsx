@@ -21,13 +21,16 @@ import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import useLogout from '@/lib/hooks/use-logout'
+import { Role, RoleLabels } from '@/types/role'
+import { UserProfile } from '@/types/user'
 
-interface SidebarProps {
-  userRole: 'admin' | 'superadmin'
+interface SidbarProps{
+  user: UserProfile
 }
 
-const Sidebar = ({ userRole }: SidebarProps) => {
+const Sidebar = ({user}: SidbarProps) => {
   const {handleLogout, isLoading} = useLogout()
+
   const isMobile = useIsMobile()
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(!isMobile)
@@ -42,6 +45,9 @@ const Sidebar = ({ userRole }: SidebarProps) => {
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
   }
+
+  const businessName = "Style Boutique"
+  const businessShortName = "SB"
 
   return (
     <>
@@ -67,13 +73,13 @@ const Sidebar = ({ userRole }: SidebarProps) => {
           {isOpen ? (
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                SB
+                {businessShortName}
               </div>
-              <h2 className="font-bold text-lg text-primary">Style Boutique</h2>
+              <h2 className="font-bold text-lg text-primary">{businessName}</h2>
             </div>
           ) : (
             <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold mx-auto">
-              SB
+              {businessShortName}
             </div>
           )}
           <Button 
@@ -90,18 +96,22 @@ const Sidebar = ({ userRole }: SidebarProps) => {
           {isOpen ? (
             <div className="flex items-center gap-2 p-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="https://i.pravatar.cc/150?u=admin" alt="User Avatar" />
+                <AvatarImage src={user?.avatar ?? `https://i.pravatar.cc/150?u=${user?.email || 'default'}`}
+                   alt="User Avatar" />
                 <AvatarFallback>UN</AvatarFallback>
               </Avatar>
               <div className="overflow-hidden">
-                <p className="text-sm font-medium truncate">Admin User</p>
-                <p className="text-xs text-muted-foreground truncate capitalize">{userRole}</p>
+                <p className="text-sm font-medium truncate">
+                      {user?.first_name ?? 'first name'}{user?.last_name ?? 'last name'}
+
+                  </p>
+                <p className="text-xs text-muted-foreground truncate capitalize">{RoleLabels[user?.role]}</p>
               </div>
             </div>
           ) : (
             <div className="flex justify-center">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="https://i.pravatar.cc/150?u=admin" alt="User Avatar" />
+                <AvatarImage src={user?.avatar ?? `https://i.pravatar.cc/150?u=${user?.email || 'default'}`} alt="User Avatar" />
                 <AvatarFallback>UN</AvatarFallback>
               </Avatar>
             </div>
@@ -118,7 +128,7 @@ const Sidebar = ({ userRole }: SidebarProps) => {
             <NavItem href="/orders" icon={<Package size={20} />} label="Orders" isOpen={isOpen} pathname={pathname} />
           </div>
           
-          {userRole === 'superadmin' && (
+          {user?.role === 'superadmin' && (
             <div className="mb-4">
               <p className={cn('text-xs text-muted-foreground px-3 mb-2', !isOpen && 'sr-only')}>Administration</p>
               <NavItem href="/admin/system" icon={<ShieldCheck size={20} />} label="System Settings" isOpen={isOpen} pathname={pathname} />

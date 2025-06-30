@@ -7,6 +7,7 @@ import authReducer from './slices/authSlice';
 import { businessApi } from './services/businessApi';
 import { aimodelApi } from './features/ai/aiModelApi';
 import { productsApi } from './features/productsApi';
+import {userApi} from "./features/user/userApi"
 
 
 export const store = configureStore({
@@ -16,6 +17,7 @@ export const store = configureStore({
     [businessApi.reducerPath]: businessApi.reducer,
     [aimodelApi.reducerPath]: aimodelApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
      chat: chatReducer, 
      auth: authReducer
   },
@@ -28,6 +30,7 @@ export const store = configureStore({
       businessApi.middleware,
       aimodelApi.middleware,
       productsApi.middleware,
+      userApi.middleware,
     ),
   // Optional: configure dev tools in development
   devTools: process.env.NODE_ENV !== "production",

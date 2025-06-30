@@ -161,7 +161,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
             </div>
             <div className="text-xs text-muted-foreground flex items-center">
               <Clock className="h-3 w-3 mr-1" />
-              Last active {formatDjangoDateTime.toFullString(conversation.lastMessage.time)}
+              Last active {formatDjangoDateTime.toFullString(conversation.lastMessage?.time)}
             </div>
           </div>
         </div>

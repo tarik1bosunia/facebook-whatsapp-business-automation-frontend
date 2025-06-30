@@ -1,79 +1,14 @@
 
-import { 
-  MessageSquare, 
-  ShoppingCart, 
-  Users, 
-  ArrowUp, 
-  ArrowDown, 
-  Facebook, 
-  Send 
+import {
+  MessageSquare,
+  ShoppingCart,
+  Users,
+  ArrowUp,
+  ArrowDown,
+  Facebook,
+  Send
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-
-const DashboardStats = () => {
-  return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      <StatCard 
-        title="Total Conversations"
-        value="1,259"
-        change={12}
-        trend="up"
-        icon={<MessageSquare className="h-5 w-5" />}
-        color="bg-blue-500"
-      />
-      <StatCard 
-        title="New Customers"
-        value="324"
-        change={8}
-        trend="up"
-        icon={<Users className="h-5 w-5" />}
-        color="bg-indigo-500"
-      />
-      <StatCard 
-        title="Total Orders"
-        value="842"
-        change={5}
-        trend="up"
-        icon={<ShoppingCart className="h-5 w-5" />}
-        color="bg-green-500"
-      />
-      <StatCard 
-        title="Response Rate"
-        value="94%"
-        change={2}
-        trend="down"
-        icon={<Send className="h-5 w-5" />}
-        color="bg-amber-500"
-      />
-
-      <Card className="col-span-full shadow-md">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg font-semibold">Channel Performance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-6 md:grid-cols-2">
-            <ChannelCard 
-              title="Facebook Messenger"
-              conversations={756}
-              responseMins={3.2}
-              conversionRate={8.4}
-              icon={<Facebook className="h-6 w-6 text-blue-600" />}
-              gradient="from-blue-50 to-blue-100 border-blue-200"
-            />
-            <ChannelCard 
-              title="WhatsApp Business"
-              conversations={503}
-              responseMins={4.5}
-              conversionRate={9.2}
-              icon={<MessageSquare className="h-6 w-6 text-green-600" />}
-              gradient="from-green-50 to-green-100 border-green-200"
-            />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
 
 interface StatCardProps {
   title: string;
@@ -83,6 +18,103 @@ interface StatCardProps {
   icon: React.ReactNode;
   color: string;
 }
+
+interface ChannelCardProps {
+  title: string;
+  conversations: number;
+  responseMins: number;
+  conversionRate: number;
+  icon: React.ReactNode;
+  gradient: string;
+}
+
+export const statCards: StatCardProps[] = [
+  {
+    title: "Total Conversations",
+    value: "1,259",
+    change: 12,
+    trend: "up",
+    icon: <MessageSquare className="h-5 w-5" />,
+    color: "bg-blue-500"
+  },
+  {
+    title: "New Customers",
+    value: "324",
+    change: 8,
+    trend: "up",
+    icon: <Users className="h-5 w-5" />,
+    color: "bg-indigo-500"
+  },
+  {
+    title: "Total Orders",
+    value: "842",
+    change: 5,
+    trend: "up",
+    icon: <ShoppingCart className="h-5 w-5" />,
+    color: "bg-green-500"
+  },
+  {
+    title: "Response Rate",
+    value: "94%",
+    change: 2,
+    trend: "down",
+    icon: <Send className="h-5 w-5" />,
+    color: "bg-amber-500"
+  }
+];
+
+
+export const channelCards: ChannelCardProps[] = [
+  {
+    title: "Facebook Messenger",
+    conversations: 756,
+    responseMins: 3.2,
+    conversionRate: 8.4,
+    icon: <Facebook className="h-6 w-6 text-blue-600" />,
+    gradient: "from-blue-50 to-blue-100 border-blue-200"
+  },
+  {
+    title: "WhatsApp Business",
+    conversations: 503,
+    responseMins: 4.5,
+    conversionRate: 9.2,
+    icon: <MessageSquare className="h-6 w-6 text-green-600" />,
+    gradient: "from-green-50 to-green-100 border-green-200"
+  }
+];
+
+
+
+const DashboardStats = () => {
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {
+        statCards.map((statCard, idx) => (
+          <StatCard
+            key={idx}
+            {...statCard}
+          />
+        ))
+      }
+
+      <Card className="col-span-full shadow-md">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-semibold">Channel Performance</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 md:grid-cols-2">
+
+            {channelCards.map((channel, idx) => (
+              <ChannelCard key={idx} {...channel} />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+
 
 const StatCard = ({ title, value, change, trend, icon, color }: StatCardProps) => {
   return (
@@ -105,14 +137,7 @@ const StatCard = ({ title, value, change, trend, icon, color }: StatCardProps) =
   );
 };
 
-interface ChannelCardProps {
-  title: string;
-  conversations: number;
-  responseMins: number;
-  conversionRate: number;
-  icon: React.ReactNode;
-  gradient: string;
-}
+
 
 const ChannelCard = ({ title, conversations, responseMins, conversionRate, icon, gradient }: ChannelCardProps) => {
   return (

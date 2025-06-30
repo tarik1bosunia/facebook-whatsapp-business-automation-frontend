@@ -3,20 +3,39 @@
 import { socketManager } from "@/features/conversations/hooks/websoketService";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks/reduxHooks";
 import { setConnectionStatus } from "@/lib/redux/slices/chatSlice";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { RefreshCw } from "lucide-react";
 
 export default function ConnectionStatusBar() {
   const status = useAppSelector((state) => state.chat.connectionStatus);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
+  const initialized = useRef(false);
 
-   
-    socketManager.connect();
-    return () => {
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+
+    // Initialize connection
+
+    if (socketManager.getConnectionState() !== "connected") {
+      socketManager.connect();
+    }
+
+
+
+    // Cleanup on window unload
+    const handleBeforeUnload = () => {
       socketManager.disconnect();
     };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // ✅ Single cleanup function
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+
   }, []);
 
   if (status === "connected") return null;

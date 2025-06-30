@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export default function FormStatus({
   isSuccess,
   isError,
@@ -7,6 +9,22 @@ export default function FormStatus({
   isError: boolean;
   error: unknown;
 }) {
+  const [showError, setShowError] = useState(true);
+
+  const getErrorMessage = (error: unknown): string => {
+    if (typeof error === "string") return error;
+    if (error instanceof Error) return error.message;
+    if (typeof error === "object" && error !== null) {
+      if ("social_media_ids" in error) {
+        return (error as any).social_media_ids as string;
+      }
+      return JSON.stringify(error, null, 2);
+    }
+    return "An unknown error occurred";
+  };
+
+  const errorMessage = isError ? getErrorMessage(error) : "";
+
   return (
     <>
       {isSuccess && (
@@ -31,10 +49,10 @@ export default function FormStatus({
         </div>
       )}
 
-      {isError && (
-        <div className="mt-4 p-3 text-red-800 bg-red-50 rounded-md border border-red-100 flex items-start animate-fade-in">
+      {isError && showError && (
+        <div className="relative mt-4 p-3 text-red-800 bg-red-50 rounded-md border border-red-100 flex items-start animate-fade-in">
           <svg
-            className="h-5 w-5 text-red-500 mr-2 flex-shrink-0"
+            className="h-5 w-5 text-red-500 mr-2 flex-shrink-0 mt-1"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -44,12 +62,22 @@ export default function FormStatus({
               clipRule="evenodd"
             />
           </svg>
-          <div>
+
+          <div className="flex-1">
             <h3 className="font-medium">Error occurred</h3>
-            <pre className="text-sm mt-1 overflow-auto font-sans max-h-40">
-              {JSON.stringify(error, null, 2)}
-            </pre>
+            <div className="text-sm mt-1 font-sans whitespace-pre-line max-h-32 overflow-y-auto pr-1">
+              {errorMessage}
+            </div>
           </div>
+
+          {/* Close button */}
+          <button
+            onClick={() => setShowError(false)}
+            className="absolute top-2 right-2 text-red-400 hover:text-red-600"
+            aria-label="Close"
+          >
+            ×
+          </button>
         </div>
       )}
     </>

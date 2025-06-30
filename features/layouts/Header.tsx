@@ -15,17 +15,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks/reduxHooks";
 import { markNotificationRead } from "@/lib/redux/slices/chatSlice";
 
+import { RoleLabels } from '@/types/role'
+import { UserProfile } from "@/types/user";
+
+import useLogout from '@/lib/hooks/use-logout'
+import { cn } from "@/lib/utils/twMerge";
+
 interface HeaderProps {
-  user: {
-    name: string;
-    email: string;
-    role: "admin" | "superadmin";
-    avatar?: string;
-  };
+  user: UserProfile
   businessName?: string;
 }
 
 const Header = ({ user, businessName = "ConvoBiz Pilot" }: HeaderProps) => {
+  const { handleLogout, isLoading } = useLogout()
+
   // const [notifications] = useState(5);
   const dispatch = useAppDispatch();
 
@@ -81,7 +84,7 @@ const Header = ({ user, businessName = "ConvoBiz Pilot" }: HeaderProps) => {
                   notifications.map((notification, index) => (
                     <NotificationItem
                       key={index}
-                      title= {notification.title}
+                      title={notification.title}
                       description={notification.content}
                       time={notification.timestamp}
                     />
@@ -127,9 +130,12 @@ const Header = ({ user, businessName = "ConvoBiz Pilot" }: HeaderProps) => {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage
+                  src={user?.avatar ?? `https://i.pravatar.cc/150?u=${user?.email || 'default'}`}
+                  alt={user?.first_name ?? 'User'}
+                />
                 <AvatarFallback className="bg-brand-100 text-brand-700">
-                  {user.name.charAt(0)}
+                  {user.first_name?.charAt(0) ?? 'U'}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -137,12 +143,15 @@ const Header = ({ user, businessName = "ConvoBiz Pilot" }: HeaderProps) => {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user.name}</p>
+                <p className="text-sm font-medium leading-none">
+                  {user?.first_name ?? 'first name'}{user?.last_name ?? 'last name'}
+                  </p>
+    
                 <p className="text-xs leading-none text-muted-foreground">
                   {user.email}
                 </p>
                 <Badge variant="outline" className="mt-1 text-xs">
-                  {user.role === "superadmin" ? "Super Admin" : "Admin"}
+                  {RoleLabels[user.role]}
                 </Badge>
               </div>
             </DropdownMenuLabel>
@@ -156,9 +165,13 @@ const Header = ({ user, businessName = "ConvoBiz Pilot" }: HeaderProps) => {
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+            <DropdownMenuItem onClick={handleLogout} disabled={isLoading} className="text-red-500">
+
+
+                <LogOut className="mr-2 h-4 w-4" />
+
+                <span className="ml-2">Logout</span>
+   
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
