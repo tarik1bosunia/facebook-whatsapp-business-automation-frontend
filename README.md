@@ -9,6 +9,6 @@
 - npm i react-icons
 - npm i react-toastify
 - npm i @headlessui/react
-
+- npm i tailwindcss-animate
 MCP server, ai agent
 products , services, new campaign
