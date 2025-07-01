@@ -17,7 +17,7 @@ export default function AppLayout({
 
 
 
-  const userRole: "admin" | "superadmin" = "superadmin"
+  const userRole: "businessman" | "superadmin" =  profile?.role??"superadmin"
   const pathname = usePathname()
   const router = useRouter()
 
@@ -66,7 +66,7 @@ export default function AppLayout({
 
   return (
     <div className="min-h-screen flex">
-      <Sidebar userRole={userRole || 'businessman'} />
+      <Sidebar user={profile} />
 
       <div className="flex-1 flex flex-col md:ml-16">
         <Header

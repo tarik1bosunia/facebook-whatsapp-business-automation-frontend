@@ -17,8 +17,15 @@ export default function LoginPage() {
       }
     }, [isAuthenticated, router])
     
-  
-    if (isAuthenticated) return null // prevent UI flash
+
+
+    if (isAuthenticated) {// prevent UI flash
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <p className="text-gray-600 text-lg font-medium">Redirecting...</p>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
