@@ -1,8 +1,13 @@
+'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { Badge } from "@/components/ui/Badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { User } from "lucide-react";
+import { UserManagementTab } from "@/features/settings";
+import RoleManagementTab from "@/features/settings/RoleManagementTab";
+import PermissionManagementTab from "@/features/settings/PermissionManagementTab";
+import AuditLogTab from "@/features/settings/AuditLogTab";
 
 const AdminUsers = () => {
   return (
@@ -30,60 +35,20 @@ const AdminUsers = () => {
           <TabsTrigger value="audit">Audit Log</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="users" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>User Administration</CardTitle>
-              <CardDescription>Manage system users</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px] flex items-center justify-center border-2 border-dashed rounded-md">
-                <p className="text-muted-foreground">User management panel</p>
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="users">
+          <UserManagementTab />
         </TabsContent>
         
         <TabsContent value="roles" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Role Management</CardTitle>
-              <CardDescription>Define and configure user roles</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px] flex items-center justify-center border-2 border-dashed rounded-md">
-                <p className="text-muted-foreground">Role management panel</p>
-              </div>
-            </CardContent>
-          </Card>
+          <RoleManagementTab />
         </TabsContent>
         
         <TabsContent value="permissions" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Permissions</CardTitle>
-              <CardDescription>Configure fine-grained permissions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px] flex items-center justify-center border-2 border-dashed rounded-md">
-                <p className="text-muted-foreground">Permission management panel</p>
-              </div>
-            </CardContent>
-          </Card>
+          <PermissionManagementTab />
         </TabsContent>
         
         <TabsContent value="audit" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>User Audit Log</CardTitle>
-              <CardDescription>Track user activity</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px] flex items-center justify-center border-2 border-dashed rounded-md">
-                <p className="text-muted-foreground">User audit log panel</p>
-              </div>
-            </CardContent>
-          </Card>
+          <AuditLogTab />
         </TabsContent>
       </Tabs>
     </div>

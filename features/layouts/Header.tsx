@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Bell, User, Settings, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/Badge";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks/reduxHooks";
 import { markNotificationRead } from "@/lib/redux/slices/chatSlice";

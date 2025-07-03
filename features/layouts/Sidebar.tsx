@@ -16,7 +16,7 @@ import {
   ShieldCheck,
   User,
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'

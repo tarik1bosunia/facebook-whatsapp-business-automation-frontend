@@ -10,11 +10,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Search, Plus, MoreHorizontal, MessageSquare, PackageOpen, Facebook, User } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/Badge";
+import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 
 export interface Customer {

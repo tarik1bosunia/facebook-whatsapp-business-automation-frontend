@@ -10,5 +10,7 @@
 - npm i react-toastify
 - npm i @headlessui/react
 - npm i tailwindcss-animate
+- npm install @hookform/resolvers yup
+- npm install date-fns
 MCP server, ai agent
 products , services, new campaign

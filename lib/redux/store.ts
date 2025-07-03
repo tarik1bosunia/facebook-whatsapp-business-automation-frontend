@@ -8,6 +8,8 @@ import { businessApi } from './services/businessApi';
 import { aimodelApi } from './features/ai/aiModelApi';
 import { productsApi } from './features/productsApi';
 import {userApi} from "./features/user/userApi"
+import {activityApi} from './features/activityApi'
+import {userApi as userSuperAdminApi} from "./features/superadmin/userApi"
 
 
 export const store = configureStore({
@@ -18,6 +20,8 @@ export const store = configureStore({
     [aimodelApi.reducerPath]: aimodelApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [userSuperAdminApi.reducerPath]: userSuperAdminApi.reducer,
+    [activityApi.reducerPath]: activityApi.reducer,
      chat: chatReducer, 
      auth: authReducer
   },
@@ -31,6 +35,8 @@ export const store = configureStore({
       aimodelApi.middleware,
       productsApi.middleware,
       userApi.middleware,
+      userSuperAdminApi.middleware,
+      activityApi.middleware,
     ),
   // Optional: configure dev tools in development
   devTools: process.env.NODE_ENV !== "production",
