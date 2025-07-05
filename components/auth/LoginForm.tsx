@@ -3,6 +3,13 @@ import { loginStart, loginSuccess, loginFailure } from '@/lib/redux/slices/authS
 import { useAppDispatch } from '@/lib/redux/hooks/reduxHooks';
 import { useLoginMutation } from '@/lib/redux/features/auth/authApi';
 
+type ApiError = {
+  message?: string;
+  data?: {
+    errors?: Record<string, string>;
+  };
+}
+
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,10 +27,11 @@ const LoginForm = () => {
         refresh: response.token.refresh,
       }));
       // Redirect to dashboard or home page
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
       dispatch(loginFailure({
-        error: error.message || 'Login failed',
-        fieldErrors: error.data?.errors,
+        error: apiError.message || 'Login failed',
+        fieldErrors: apiError.data?.errors,
       }));
     }
   };

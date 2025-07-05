@@ -1,46 +1,32 @@
 import {
   useGetMessagesQuery,
-  useSendMessageMutation,
 } from "@/lib/redux/services/conversationApi";
 import { Message } from "@/types/conversation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/redux/store";
-import { socketManager } from "./websoketService";
+import { socketManager } from "@/lib/websocket/websocketManager";
+import { addMessage, addMessages, selectAllMessages } from "@/lib/redux/slices/chatSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks/reduxHooks";
 
 export default function useConversationMessages(conversationId?: string) {
   const {
-    data: fetchedMessages,
+    data: fetchedMessages = [],
     isLoading,
     isError,
   } = useGetMessagesQuery(conversationId!, {
     skip: !conversationId,
   });
 
-  const messagesFromChatSlice = useSelector((state: RootState) =>
-    conversationId ? state.chat.messages[conversationId] || [] : []
-  );
-  console.log("Messages from ChatSlice-> ", messagesFromChatSlice);
+  const dispatch = useAppDispatch();
 
-  const [sendMessage, { isLoading: isSending }] = useSendMessageMutation();
+  useEffect(() => {
+    if (conversationId && fetchedMessages.length > 0) {
+      dispatch(addMessages({ conversationId, messages: fetchedMessages }));
+    }
+  }, [conversationId, fetchedMessages, dispatch]);
 
-  console.log("fetchedMessages", fetchedMessages);
-  console.log("conversationId", conversationId);
-
+  const messagesFromChatSlice = useAppSelector(selectAllMessages);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Initialize WebSocket once; it appends messages to allMessages
-  // const { newMessages } = useWebSocketMessages();
-
-  // Filter WebSocket messages for this conversation
-  // const filteredNewMessages = useMemo(() => {
-  //   return newMessages.filter((msg) => msg.conversation_id === conversationId);
-  // }, [newMessages, conversationId]);
-
-  // const allMessages = useMemo(() => {
-  //     return [...(fetchedMessages || []), ...filteredNewMessages];
-  //   }, [fetchedMessages, filteredNewMessages]);
 
   const mergedMessages: Message[] = useMemo(() => {
     if (!fetchedMessages) return messagesFromChatSlice;
@@ -60,34 +46,36 @@ export default function useConversationMessages(conversationId?: string) {
     const messageToSend = newMessage.trim();
     setNewMessage("");
 
-    // TODO : send message using  websocket from here
-
-    const message = {
-      type: "new_message", // This should match what your server expects
+    // Create WebSocket message
+    const wsMessage = {
+      type: "new_message",
       payload: {
-        conversation_id: "your-conversation-id",
-        text: "Hello, this is my message!",
-        // Include any other required fields like:
-        // media_id, media_url, media_type, contacts if needed
+        conversation_id: Number(conversationId),
+        text: messageToSend,
+        time: new Date().toISOString(),
+        // Include any additional fields your backend expects
+        // media_id: null,
+        // media_url: null,
+        // media_type: null,
+        // contacts: [],
       },
     };
-    socketManager.send(message);
 
-    try {
-      await sendMessage({
-        conversation: Number(conversationId),
-        message: messageToSend,
-      }).unwrap();
-    } catch (err) {
-      console.error("Error sending message:", err);
-    }
+    socketManager.send(wsMessage);
+
+    dispatch(addMessage({conversationId, message: {
+      id: `ws-${Date.now()}`,
+      text: messageToSend,
+      time: `${Date.now()}`,
+      sender: "business"
+    }}))
+
   };
 
   return {
     isLoading,
     isError,
-    isSending,
-    messages: mergedMessages,
+    messages: messagesFromChatSlice,
     newMessage,
     setNewMessage,
     messagesEndRef,

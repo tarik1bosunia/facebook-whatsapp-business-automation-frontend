@@ -4,10 +4,10 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks/reduxHooks';
 import { setConnectionStatus } from '@/lib/redux/slices/chatSlice';
 // import { useGetCurrentUserQuery } from '@/lib/redux/services/authApi';
 import NotificationCenter from '@/components/notifications/NotificationCenter';
-import { socketManager } from '@/features/conversations/hooks/websoketService';
+import { socketManager } from '@/lib/websocket/websocketManager';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   //   const { data: user, isLoading } = useGetCurrentUserQuery();
 
   //   useEffect(() => {

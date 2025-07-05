@@ -2,17 +2,13 @@
 import { useState } from "react";
 
 
-import { Facebook, MessageSquare, Settings as SettingsIcon, Users, Key, Plus } from "lucide-react";
+import { Facebook, MessageSquare, Settings as SettingsIcon, Users, Key } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { AIConfigTab } from "@/features/settings/AIConfigTab";
 import BusinessTab from "@/features/settings/BusinessTab";
@@ -150,7 +146,7 @@ const Settings = () => {
               </div>
             </CardContent>
             <CardFooter className="flex justify-end">
-              <Button onClick={handleSave}>Save Changes</Button>
+              <Button onClick={handleSave} disabled={loading}>{loading ? "Saving..." : "Save Changes"}</Button>
             </CardFooter>
           </Card>
         </TabsContent>

@@ -15,16 +15,28 @@ export interface Conversation {
   unreadCount: number;
 }
 
-interface Contact {
+export interface Contact {
   name: string;
   phones: string[];
 }
+
+// export interface Contact {
+//   name?: string;
+//   phones?: Array<{
+//     phone: string;
+//     type?: string;
+//   }>;
+//   emails?: Array<{
+//     email: string;
+//     type?: string;
+//   }>;
+// }
+
 
 export interface Message {
   id: string;
   text: string;
   time: string;
-  conversation_id: string;
   sender: "customer" | "business" | "ai";
   media_id?: string;
   media_type?:string;
@@ -45,7 +57,7 @@ export interface SocialMediaUser {
 
 export interface Notification {
   id: string;
-  type: 'new_message' | 'system_alert' | 'new_conversation';
+  type: 'new_message' | 'system_alert' | 'new_conversation' | 'message_failed';
   title: string;
   content: string;
   timestamp: string;
@@ -56,3 +68,5 @@ export interface Notification {
     priority?: 'low' | 'medium' | 'high';
   };
 }
+
+

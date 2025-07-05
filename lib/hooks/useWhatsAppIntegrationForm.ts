@@ -35,7 +35,7 @@ export const useWhatsAppIntegrationForm = () => {
     try {
       await updateWhatsAppIntegration(formData).unwrap();
       toast.success("WhatsApp configuration updated!");
-    } catch (err) {
+    } catch  {
       toast.error("Update failed.");
     }
   };

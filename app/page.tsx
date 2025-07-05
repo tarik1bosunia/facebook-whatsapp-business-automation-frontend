@@ -16,7 +16,7 @@ export default function HomePage() {
         router.replace(target)
     }, [isAuthenticated, router])
 
-    const text =  `Redirecting you to ${isAuthenticated ? 'Dashboard' : 'Login'}}`
+    const text =  `Redirecting you to ${isAuthenticated ? 'Dashboard' : 'Login'}`
     return <Rediect text={text}/>
     
 

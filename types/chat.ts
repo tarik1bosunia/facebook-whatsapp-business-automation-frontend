@@ -11,7 +11,7 @@ export interface Message {
 
 export interface AppNotification {
   id: string;
-  type: 'new_message' | 'system_alert' | 'new_conversation';
+  type: 'new_message' | 'system_alert' | 'new_conversation' | 'message_failed';
   title: string;
   content: string;
   timestamp: string;

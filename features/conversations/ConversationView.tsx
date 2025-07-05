@@ -38,9 +38,11 @@ interface ConversationViewProps {
 const ConversationView = ({ conversation }: ConversationViewProps) => {
 
   const conversationId = conversation?.id;
+
+  
   const {
     isLoading, isError,
-    isSending,
+    // isSending,
     messages,
     newMessage, setNewMessage,
     messagesEndRef,
@@ -254,7 +256,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
               }
             }}
           />
-          <Button onClick={handleSendMessage} disabled={isSending || !newMessage.trim()}>
+          <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
             <Send className="h-4 w-4" />
           </Button>
         </div>

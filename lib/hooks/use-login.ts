@@ -9,6 +9,7 @@ import { useAppDispatch } from "@/lib/redux/hooks/reduxHooks";
 // import useModal from "./use-modal";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 
+import { socketManager } from "@/lib/websocket/websocketManager";
 
 export default function useLogin(){
     // const {close: closeLoginModal} = useModal('loginModal')
@@ -40,6 +41,9 @@ export default function useLogin(){
            const {refresh, access}  = data.token
     
            dispatch(setCredentials({refreshToken: refresh, accessToken: access}))
+           
+           socketManager.connect()
+
            toast.success("Login Successfull!")
            router.push('/profile')
         })

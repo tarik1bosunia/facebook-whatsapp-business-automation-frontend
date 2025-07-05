@@ -34,7 +34,7 @@ export const useFacebookIntegrationForm = () => {
     try {
       await updateFacebookIntegration(formData).unwrap();
       toast.success("Facebook configuration updated!");
-    } catch (err) {
+    } catch{
       toast.error("Update failed.");
     }
   };

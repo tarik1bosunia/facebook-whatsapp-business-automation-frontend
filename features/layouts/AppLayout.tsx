@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { usePathname, redirect, useRouter } from 'next/navigation'
+import { useEffect, } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import { useGetProfileQuery } from '@/lib/redux/features/user/userApi'
@@ -17,7 +17,7 @@ export default function AppLayout({
 
 
 
-  const userRole: "businessman" | "superadmin" =  profile?.role??"superadmin"
+  const userRole: "businessman" | "superadmin" = profile?.role ?? "superadmin"
   const pathname = usePathname()
   const router = useRouter()
 
@@ -32,28 +32,31 @@ export default function AppLayout({
     }
   }, [pathname, userRole, isLoading, router])
 
-
-  if (isError) {
-    console.log("profile error", error)
+  if(isLoading){
+    return null
   }
 
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  //     </div>
+  //   )
+  // }
 
 
   if (isError || !profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-red-500">Error loading user data</div>
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
+        <div className="text-red-500 text-center">
+          Error loading user data
+          <br />
+          {typeof error === 'object' && 'status' in error ? `(${error.status})` : ''}
+        </div>
         <button
           onClick={() => router.push('/login')}
-          className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
+          className="px-4 py-2 bg-blue-500 text-white rounded"
         >
           Go to Login
         </button>

@@ -1,4 +1,4 @@
-export default function Rediect({text}: {text: string}) {
+export default function Redirect({text}: {text: string}) {
     return (
         <div className="flex h-screen items-center justify-center bg-white dark:bg-gray-900">
             <div className="flex flex-col items-center space-y-4">

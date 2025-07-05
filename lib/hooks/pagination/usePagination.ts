@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import useInfiniteScroll from './useInfiniteScroll';
+import { PaginatedResponse } from '@/types/pagination';
+
+
 
 
 // Define generic type for the data being searched
@@ -8,7 +11,13 @@ type UsePaginationProps<T> = {
   query?: string;
   pageNumber?: number;
   pageSize?: number;
-  fetchFunction: (arg: any) => any;
+  // fetchFunction: (arg: any) => any;
+  fetchFunction: (arg: { page: number }) => {
+    data?: PaginatedResponse<T>; // ✅ optional
+    isLoading: boolean;
+    isError: boolean;
+    isFetching: boolean;
+  }
 };
 
 interface UsePaginationReturn<T> {
@@ -29,9 +38,9 @@ interface UsePaginationReturn<T> {
   lastElementRef: (node: HTMLDivElement) => void
 }
 
-export default function usePagination<T>({apiUrl="", query = "", pageSize = 5, fetchFunction }: UsePaginationProps<T>) : UsePaginationReturn<T>{
+export default function usePagination<T>({ fetchFunction }: UsePaginationProps<T>) : UsePaginationReturn<T>{
 
-
+// apiUrl="", query = "", pageSize = 5,
 
   // pagination
   const initialPage = 1
@@ -51,10 +60,10 @@ export default function usePagination<T>({apiUrl="", query = "", pageSize = 5, f
   
 
   // Clear results when query changes
-  useEffect(() => {
-    setResults([]);
-    resetPage()
-  }, [query]);
+  // useEffect(() => {
+  //   setResults([]);
+  //   resetPage()
+  // }, [query]);
 
   // Append new results as they come in
   useEffect(() => {

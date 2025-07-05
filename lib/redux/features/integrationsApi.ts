@@ -1,6 +1,5 @@
 // services/integrationsApi.ts
 
-import { AIConfiguration } from "@/types/ai";
 import { apiSlice } from "../api/apiSlice";
 
 const FACEBOOK_INTIGRATIONS_URL = "business/facebook/"

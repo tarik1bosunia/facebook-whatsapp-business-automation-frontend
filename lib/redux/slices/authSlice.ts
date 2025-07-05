@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserProfile } from "@/types/auth";
-import { getTokenExpiration } from "@/lib/utils/jwt";
+
 
 interface AuthState {
   accessToken: string | null;
@@ -89,10 +88,25 @@ const authSlice = createSlice({
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
       localStorage.setItem("authState", JSON.stringify(state));
-
     },
     finishedInitialLoad: (state) => {
       state.isLoading = false;
+    },
+
+    tokenRefreshSuccess: (
+      state,
+      action: PayloadAction<{ accessToken: string }>
+    ) => {
+      state.accessToken = action.payload.accessToken;
+      state.isAuthenticated = true;
+      // Persist the new state
+      localStorage.setItem("authState", JSON.stringify(state));
+    },
+    tokenRefreshFailure: (state) => {
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.isAuthenticated = false;
+      localStorage.removeItem("authState");
     },
   },
 });
@@ -103,7 +117,9 @@ export const {
   loginFailure,
   logout,
   setCredentials,
-  finishedInitialLoad
+  finishedInitialLoad,
+  tokenRefreshSuccess,
+  tokenRefreshFailure,
 } = authSlice.actions;
 export default authSlice.reducer;
 

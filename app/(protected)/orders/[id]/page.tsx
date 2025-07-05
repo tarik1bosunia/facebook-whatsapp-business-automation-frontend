@@ -4,6 +4,7 @@ import { useGetOrderByIdQuery } from '@/lib/redux/services/orderApi';
 import { useParams } from 'next/navigation';
 
 
+
 export default function OrderDetailsPage ()  {
   const {id} = useParams<{id:string}>();
   const {data: order, isLoading, isError} = useGetOrderByIdQuery(id);
