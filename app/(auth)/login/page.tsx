@@ -3,7 +3,7 @@
 import useLogin from "@/lib/hooks/use-login";
 import { useAppSelector } from "@/lib/redux/hooks/reduxHooks";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function LoginPage() {
   const { email, password, isLoading, onChange, onSubmit } = useLogin();

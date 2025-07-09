@@ -2,6 +2,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWithReauth } from '../api/baseQueryWithReauth'
 import { Product, ProductCategory } from '@/types/product'
+import { PaginatedResponse } from '@/types/pagination'
 
 
 const PRODUCT_API_URL = 'business/products/'
@@ -12,8 +13,8 @@ export const productsApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ['Products', 'Categories'],
   endpoints: (builder) => ({
-    getProducts: builder.query<Product[], void>({
-      query: () => PRODUCT_API_URL,
+    getProducts: builder.query<PaginatedResponse<Product>, { page?: number }>({
+      query: ({ page = 1 }) => `${PRODUCT_API_URL}?page=${page}`,
       providesTags: ['Products']
     }),
     getProduct: builder.query<Product, number>({
@@ -46,9 +47,34 @@ export const productsApi = createApi({
     getCategories: builder.query<ProductCategory[], void>({
       query: () => CATEGORY_API_URL,
       providesTags: ['Categories']
-    })
+    }),
+    createProductCategories: builder.mutation<ProductCategory, Partial<ProductCategory>>({
+      query: (body) => ({
+        url: CATEGORY_API_URL,
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['Categories']
+    }),
+    updateProductCategory: builder.mutation<ProductCategory, Partial<ProductCategory>>({
+      query: ({ id, ...patch }) => ({
+        url: `${CATEGORY_API_URL}${id}/`,
+        method: 'PATCH',
+        body: patch
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Products', id }]
+    }),
+    deleteProductCategory: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `${CATEGORY_API_URL}${id}/`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['Products', 'Categories']
+    }),
+
   })
 })
+
 
 export const {
   useGetProductsQuery,
@@ -56,5 +82,8 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
-  useGetCategoriesQuery
+  useGetCategoriesQuery,
+  useCreateProductCategoriesMutation,
+  useUpdateProductCategoryMutation,
+  useDeleteProductCategoryMutation,
 } = productsApi

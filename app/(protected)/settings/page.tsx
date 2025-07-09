@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 
-import { Facebook, MessageSquare, Settings as SettingsIcon, Users, Key } from "lucide-react";
+import { Facebook, MessageSquare, Settings as SettingsIcon, Users, Key, User } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +14,8 @@ import { AIConfigTab } from "@/features/settings/AIConfigTab";
 import BusinessTab from "@/features/settings/BusinessTab";
 import FacebookIntegrationCard from "@/features/settings/FacebookIntegrationCard";
 import WhatsAppIntegrationCard from "@/features/settings/WhatsAppIntegrationCard";
-import {UserManagementTab} from "@/features/settings";
+import { UserManagementTab } from "@/features/settings";
+import Link from "next/link";
 
 
 
@@ -31,12 +32,15 @@ const Settings = () => {
 
   return (
     <div className="space-y-6">
+
       <div>
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Settings</h1>
         <p className="text-muted-foreground">
           Manage your system settings and integrations
         </p>
       </div>
+
+
 
 
 
@@ -62,6 +66,13 @@ const Settings = () => {
             <Key className="h-4 w-4 mr-2" />
             API Keys
           </TabsTrigger>
+          <Link
+            href="/account"
+            className="flex items-center justify-start gap-3 p-4 mx-8 rounded-xl hover:bg-white/50 transition-all duration-200 text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            <User className="h-5 w-5" />
+            <span className="hidden sm:inline">Account</span>
+          </Link>
         </TabsList>
 
         <BusinessTab />

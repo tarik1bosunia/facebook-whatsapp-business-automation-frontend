@@ -1,6 +1,6 @@
 'use client'
 
-import { socketManager } from "@/lib/websocket/websocketManager";
+import { socketManager } from "@/lib/websocket/websocketManager1";
 import { setConnectionStatus } from "@/lib/redux/slices/chatSlice";
 import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";

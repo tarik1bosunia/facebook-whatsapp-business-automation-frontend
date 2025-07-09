@@ -64,7 +64,7 @@ const RecentActivity = () => {
     fetchFunction: useGetActivitiesQuery,
   });
 
-  console.log("Activity data", activities)
+  // console.log("Activity data", activities)
 
   // PAGINATION TEMPLATE FOR INFINITE SCROLL 
   // {

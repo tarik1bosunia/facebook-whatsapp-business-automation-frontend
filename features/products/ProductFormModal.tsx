@@ -55,12 +55,15 @@ useEffect(() => {
       } else {
         await createProduct(values).unwrap()
       }
-      onSuccess()
       onClose()
+      onSuccess()
+      
     } catch (err) {
       console.error('Form submit error:', err)
     }
   }
+
+  console.log("categories", categories)
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">

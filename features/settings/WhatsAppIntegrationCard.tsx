@@ -1,6 +1,5 @@
-"use client";
+'use client';
 
-import { MessageSquare } from "lucide-react";
 
 import {
   Card,
@@ -9,77 +8,179 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
+  Button,
   Switch,
-  Button
-} from "@/components/ui/";
-import { useWhatsAppIntegrationForm } from "@/lib/hooks/useWhatsAppIntegrationForm";
+  Input,
+  Label,
+  Skeleton,
+} from "@/components/ui";
+import useWhatsAppIntegrationForm from "@/lib/hooks/useWhatsAppIntegrationForm";
+import { MessageCircle } from "lucide-react";
 
 
-export default function WhatsAppIntegrationCard() {
+export default function FacebookIntegrationCard() {
   const {
-    register,
+    formData,
+    handleChange,
+    handleCheckboxChange,
     handleSubmit,
-    isLoading,
-    isUpdating,
+    handleConnect,
     handleDisconnect,
-    handleReconnect,
+    isFetching,
+    isUpdating,
     isConnected,
+    isDirty,
+    errors,
+    platformId,
   } = useWhatsAppIntegrationForm();
 
-  if (isLoading) return <p>Loading WhatsApp integration...</p>;
-
-  return (
-    <form onSubmit={handleSubmit}>
+  if (isFetching) {
+    return (
       <Card>
         <CardHeader>
-          <CardTitle>WhatsApp Integration</CardTitle>
-          <CardDescription>Connect your WhatsApp Business account</CardDescription>
+          <CardTitle className="flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-green-600" />
+            WhatsApp Integration
+          </CardTitle>
+          <CardDescription>Loading integration settings...</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                <MessageSquare className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="font-medium">
-                  WhatsApp Business: <span className="font-normal">+1 (555) 123-4567</span>
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {isConnected ? "Connected" : "Not connected"}
-                </p>
-              </div>
-            </div>
-            {isConnected ? (
-              <Button type="button" variant="outline" className="text-red-500" onClick={handleDisconnect}>
-                Disconnect
-              </Button>
-            ) : (
-              <Button type="button" onClick={handleReconnect}>
-                Reconnect
-              </Button>
-            )}
-          </div>
-
-          <div className="pt-4 border-t">
-            <h4 className="text-sm font-medium mb-2">Permissions</h4>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-sm text-muted-foreground">Send Automated Replies</label>
-                <Switch {...register("is_send_auto_reply")} disabled={!isConnected} />
-              </div>
-              <div className="flex items-center justify-between">
-                <label className="text-sm text-muted-foreground">Send Notifications</label>
-                <Switch {...register("is_send_notification")} disabled={!isConnected} />
-              </div>
-            </div>
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <div className="flex gap-4 pt-4">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-24" />
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button type="submit" disabled={isUpdating || !isConnected}>
-            {isUpdating ? "Saving..." : "Save Changes"}
-          </Button>
-        </CardFooter>
+      </Card>
+    );
+  }
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+          <MessageCircle className="h-5 w-5 text-green-600" />
+            WhatsApp Integration
+          </CardTitle>
+          <CardDescription>
+            {isConnected ? "Connected" : "Not connected"}
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="platform_id"> Phone Number ID </Label>
+              <Input
+                id="platform_id"
+                value={formData.platform_id}
+                onChange={handleChange("platform_id")}
+                disabled={isUpdating}
+              />
+              {errors.platform_id && (
+                <p className="text-sm text-red-500">{errors.platform_id}</p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="access_token">Access Token</Label>
+              <Input
+                id="access_token"
+                type="password"
+                value={formData.access_token}
+                onChange={handleChange("access_token")}
+                disabled={isUpdating}
+                placeholder={isConnected ? "********" : "Enter token"}
+              />
+              {errors.access_token && (
+                <p className="text-sm text-red-500">{errors.access_token}</p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="verify_token">Verify Token</Label>
+              <Input
+                id="verify_token"
+                type="password"
+                value={formData.verify_token}
+                onChange={handleChange("verify_token")}
+                disabled={isUpdating}
+                placeholder={isConnected ? "********" : "Enter token"}
+              />
+              {errors.verify_token && (
+                <p className="text-sm text-red-500">{errors.verify_token}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-4 border-t space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium">Connection Status</h4>
+                <p className="text-sm text-muted-foreground">
+                  {isConnected ? "Active connection" : "Not connected"}
+                </p>
+              </div>
+              {isConnected ? (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDisconnect}
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? "Disconnecting..." : "Disconnect"}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={handleConnect}
+                  disabled={!platformId || isUpdating}
+                >
+                  {isUpdating ? "Connecting..." : "Connect"}
+                </Button>
+              )}
+            </div>
+
+            {isConnected && (
+              <div className="space-y-2">
+                <h4 className="font-medium">Permissions</h4>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="auto-reply">Auto Replies</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Automatically respond to messages
+                    </p>
+                  </div>
+                <Switch
+                  id="auto-reply"
+                  checked={formData.is_send_auto_reply}
+                  onCheckedChange={handleCheckboxChange("is_send_auto_reply")}
+                  disabled={isUpdating}
+                />
+
+
+                  
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="notifications">Notifications</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Receive message alerts
+                    </p>
+                  </div>
+                <Switch
+                  id="notifications"
+                  checked={formData.is_send_notification}
+                  onCheckedChange={handleCheckboxChange("is_send_notification")}
+                  disabled={isUpdating}
+                />
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
       </Card>
     </form>
   );

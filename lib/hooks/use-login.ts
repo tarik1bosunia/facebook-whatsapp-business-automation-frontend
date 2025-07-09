@@ -9,7 +9,7 @@ import { useAppDispatch } from "@/lib/redux/hooks/reduxHooks";
 // import useModal from "./use-modal";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 
-import { socketManager } from "@/lib/websocket/websocketManager";
+import { socketManager } from "@/lib/websocket/websocketManager1";
 
 export default function useLogin(){
     // const {close: closeLoginModal} = useModal('loginModal')

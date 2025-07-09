@@ -1,11 +1,61 @@
-import { ErrorResponse, LoginRequest, LoginResponse } from "@/types/auth";
+import { LoginRequest, LoginResponse } from "@/types/auth";
 import { apiSlice } from "../../api/apiSlice";
+
+export interface FieldError {
+  [key: string]: string[]; // key is field name like "email", "password", etc.
+}
+
+export interface ErrorResponse {
+  errors?: FieldError;
+  message?: string;
+}
+
+interface RegisterUserRequest {
+  email: string;
+  first_name: string;
+  last_name: string;
+  password: string;
+}
+
+interface RegisterUserResponse {
+  token: {
+    access: string;
+    refresh: string;
+  };
+  user: {
+    email: string;
+    first_name: string;
+    last_name: string;
+    role: string;
+  };
+  message: string;
+}
 
 const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query({
       query: () => "/account/login",
     }),
+
+    registerUser: builder.mutation<RegisterUserResponse, RegisterUserRequest>({
+      query: (data) => ({
+        url: "account/registration/",
+        method: "POST",
+        body: data,
+      }),
+
+      transformErrorResponse: (response: {
+        status: number;
+        data: ErrorResponse;
+      }) => {
+        return {
+          status: response.status,
+          message: response.data?.message || "Registration failed",
+          errors: response.data?.errors,
+        };
+      },
+    }),
+
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
         url: "account/login/",
@@ -66,5 +116,11 @@ const authApi = apiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetUsersQuery, useLoginMutation, useLogoutMutation, useVerifyTokenMutation, useRefreshTokenMutation } =
-  authApi;
+export const {
+  useGetUsersQuery,
+  useRegisterUserMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useVerifyTokenMutation,
+  useRefreshTokenMutation,
+} = authApi;

@@ -8,3 +8,4 @@
 4. Need To Check toast => i used another libray, need to check i can go with the previous library
 5. In Settigs Need to Work With User Management
 6. when logged in it is not removing previous conversation need to fix it
+7. add product category UI

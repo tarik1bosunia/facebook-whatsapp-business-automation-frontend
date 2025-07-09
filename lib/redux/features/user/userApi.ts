@@ -1,7 +1,24 @@
 // services/userApi.ts
 import { UpdateUserProfilePayload, UserProfile } from '@/types/user';
-import { createApi } from '@reduxjs/toolkit/query/react';
+import { createApi, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../../api/baseQueryWithReauth';
+
+interface ChangePasswordRequest {
+  old_password: string
+  new_password: string
+}
+
+interface ChangePasswordResponse {
+  message: string
+}
+
+interface ChangePasswordError {
+  errors?: {
+    old_password?: string[];
+    new_password?: string[];
+  };
+  message?: string;
+}
 
 
 export const userApi = createApi({
@@ -21,7 +38,21 @@ export const userApi = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    changePassword: builder.mutation<ChangePasswordResponse, ChangePasswordRequest, { rejectValue: ChangePasswordError }>({
+      query: (body) => ({
+        url: 'account/auth/change-password/',
+        method: 'POST',
+        body,
+      }),
+        transformErrorResponse: (
+        response: FetchBaseQueryError & { data?: ChangePasswordError }
+      ): ChangePasswordError => {
+        return response.data || { message: 'Unknown error occurred' };
+      },
+      
+    }),
+    
   }),
 });
 
-export const { useGetProfileQuery, useUpdateProfileMutation } = userApi;
+export const { useGetProfileQuery, useUpdateProfileMutation, useChangePasswordMutation } = userApi;

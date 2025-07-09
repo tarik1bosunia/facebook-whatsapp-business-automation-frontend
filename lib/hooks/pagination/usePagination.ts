@@ -1,23 +1,21 @@
-import { useEffect, useState } from 'react';
-import useInfiniteScroll from './useInfiniteScroll';
-import { PaginatedResponse } from '@/types/pagination';
-
-
-
+import { useEffect, useState } from "react";
+import useInfiniteScroll from "./useInfiniteScroll";
+import { PaginatedResponse } from "@/types/pagination";
 
 // Define generic type for the data being searched
 type UsePaginationProps<T> = {
-  apiUrl?: string,
+  apiUrl?: string;
   query?: string;
   pageNumber?: number;
   pageSize?: number;
   // fetchFunction: (arg: any) => any;
   fetchFunction: (arg: { page: number }) => {
-    data?: PaginatedResponse<T>; // ✅ optional
+    data?: PaginatedResponse<T>;
     isLoading: boolean;
     isError: boolean;
     isFetching: boolean;
-  }
+    refetch: () => void;
+  };
 };
 
 interface UsePaginationReturn<T> {
@@ -26,38 +24,39 @@ interface UsePaginationReturn<T> {
   isLoading: boolean;
   isError: boolean;
   isFetching: boolean;
-
+  refetch: () => void;
 
   // pagination
-  pageNumber: number,
-  incrementPage: () => void,
-  resetPage: () => void,
+  pageNumber: number;
+  incrementPage: () => void;
+  resetPage: () => void;
   hasMore: boolean;
 
   // infinite scroll
-  lastElementRef: (node: HTMLDivElement) => void
+  lastElementRef: (node: HTMLDivElement) => void;
 }
 
-export default function usePagination<T>({ fetchFunction }: UsePaginationProps<T>) : UsePaginationReturn<T>{
-
-// apiUrl="", query = "", pageSize = 5,
+export default function usePagination<T>({
+  fetchFunction,
+}: UsePaginationProps<T>): UsePaginationReturn<T> {
+  // apiUrl="", query = "", pageSize = 5,
 
   // pagination
-  const initialPage = 1
+  const initialPage = 1;
   const [pageNumber, setPageNumber] = useState(initialPage);
   const incrementPage = () => setPageNumber((prevPage) => prevPage + 1);
   const resetPage = () => setPageNumber(initialPage);
   const [hasMore, setHasMore] = useState(false);
-  
-  
+
   // data featching
   // const {data, isLoading, isError, isFetching } = fetchFunction({url: `${apiUrl}?page=${pageNumber}&page_size=${pageSize}&q=${query}`});
   // TODO: need to update it for filtering and search
-  const {data, isLoading, isError, isFetching } = fetchFunction({page: pageNumber});
+  const { data, isLoading, isError, isFetching, refetch } = fetchFunction({
+    page: pageNumber,
+  });
 
   const [results, setResults] = useState<T[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  
 
   // Clear results when query changes
   // useEffect(() => {
@@ -68,13 +67,25 @@ export default function usePagination<T>({ fetchFunction }: UsePaginationProps<T
   // Append new results as they come in
   useEffect(() => {
     if (data?.results) {
-      setResults((prevResults) => Array.from(new Set([...prevResults, ...data.results])));
+      if (pageNumber == initialPage) {
+        setResults(data.results);
+      } else {
+        setResults((prevResults) =>
+          Array.from(new Set([...prevResults, ...data.results]))
+        );
+      }
       setHasMore(!!data.next);
       setTotalCount(data.count);
     }
-  }, [data?.results, data?.next, data?.count]);
+  }, [data?.results, data?.next, data?.count, pageNumber]);
 
-  // use infinite scrool 
+  // Improved refetch function that resets pagination
+  const enhancedRefetch = () => {
+    resetPage();
+    return refetch();
+  };
+
+  // use infinite scrool
   const lastElementRef = useInfiniteScroll({
     loading: isLoading,
     isFetching,
@@ -87,6 +98,7 @@ export default function usePagination<T>({ fetchFunction }: UsePaginationProps<T
     results,
     isLoading,
     isError,
+    refetch: enhancedRefetch,
     hasMore,
     isFetching,
 

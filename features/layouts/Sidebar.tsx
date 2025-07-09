@@ -126,6 +126,8 @@ const Sidebar = ({user}: SidbarProps) => {
             <NavItem href="/knowledge" icon={<Book size={20} />} label="Knowledge Base" isOpen={isOpen} pathname={pathname} />
             <NavItem href="/customers" icon={<Users size={20} />} label="Customers" isOpen={isOpen} pathname={pathname} />
             <NavItem href="/orders" icon={<Package size={20} />} label="Orders" isOpen={isOpen} pathname={pathname} />
+            <NavItem href="/products" icon={<Package size={20} />} label="Products" isOpen={isOpen} pathname={pathname} />
+            <NavItem href="/services" icon={<Package size={20} />} label="services" isOpen={isOpen} pathname={pathname} />
           </div>
           
           {user?.role === 'superadmin' && (
