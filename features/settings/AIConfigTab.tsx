@@ -22,7 +22,7 @@ import {
 
 import { useAISettings } from '@/lib/hooks/use-ai-config';
 import type { AIConfiguration } from '@/types/ai';
-
+export type ResponseTone = 'friendly' | 'professional' | 'formal' | 'helpful';
 export function AIConfigTab() {
   const { aiModels, form, isLoading, isSaving, handleChange, handleSave } = useAISettings();
 
@@ -44,7 +44,7 @@ export function AIConfigTab() {
             <FormLabel>AI Model</FormLabel>
             <Select
               value={form.ai_model}
-              onValueChange={(value) => handleChange('ai_model', Number(value))}
+              onValueChange={(value) => handleChange('ai_model', value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select AI Model" />
@@ -76,7 +76,7 @@ export function AIConfigTab() {
             <FormLabel>AI Response Tone</FormLabel>
             <Select
               value={form.response_tone}
-              onValueChange={(value) => handleChange('response_tone', value)}
+              onValueChange={(value: ResponseTone) => handleChange('response_tone', value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Tone" />

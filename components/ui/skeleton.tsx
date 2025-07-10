@@ -1,10 +1,7 @@
-// components/ui/skeleton.tsx
 import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
+const Skeleton = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}

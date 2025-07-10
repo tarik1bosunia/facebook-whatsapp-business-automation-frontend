@@ -9,11 +9,19 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
+// Define form values type
+type EmailFormValues = {
+  currentEmail: string;
+  newEmail: string;
+  password: string;
+  verificationCode: string;
+};
+
 const ChangeEmail = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: Enter new email, 2: Verify email
   
-  const form = useForm({
+  const form = useForm<EmailFormValues>({
     defaultValues: {
       currentEmail: 'john.doe@example.com',
       newEmail: '',
@@ -22,24 +30,22 @@ const ChangeEmail = () => {
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async () => {
     setLoading(true);
     
     if (step === 1) {
       // Simulate sending verification email
-      setTimeout(() => {
-        setLoading(false);
-        setStep(2);
-        toast.success('Verification code sent to your new email address');
-      }, 1500);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setLoading(false);
+      setStep(2);
+      toast.success('Verification code sent to your new email address');
     } else {
       // Simulate email verification
-      setTimeout(() => {
-        setLoading(false);
-        toast.success('Email address updated successfully');
-        setStep(1);
-        form.reset();
-      }, 1500);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setLoading(false);
+      toast.success('Email address updated successfully');
+      setStep(1);
+      form.reset();
     }
   };
 
@@ -137,7 +143,7 @@ const ChangeEmail = () => {
                           Verification Required
                         </p>
                         <p className="text-sm text-orange-700">
-                          We've sent a verification code to <strong>{form.watch('newEmail')}</strong>. 
+                          We&apos;ve sent a verification code to <strong>{form.watch('newEmail')}</strong>. 
                           Please check your inbox and enter the code below.
                         </p>
                       </div>
@@ -178,7 +184,7 @@ const ChangeEmail = () => {
                       Back
                     </Button>
                   )}
-                  <Link href="/account">
+                  <Link href="/account" legacyBehavior>
                     <Button variant="outline">Cancel</Button>
                   </Link>
                 </div>

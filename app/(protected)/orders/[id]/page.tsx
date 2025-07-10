@@ -1,13 +1,11 @@
-
-'use client'; 
+'use client';
 import { useGetOrderByIdQuery } from '@/lib/redux/services/orderApi';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 
-
-
-export default function OrderDetailsPage ()  {
-  const {id} = useParams<{id:string}>();
-  const {data: order, isLoading, isError} = useGetOrderByIdQuery(id);
+export default function OrderDetailsPage() {
+  const { id } = useParams<{ id: string }>();
+  const { data: order, isLoading, isError } = useGetOrderByIdQuery(id);
 
   if (isLoading) return <div className="p-6 text-center">Loading...</div>;
   if (isError) return <div className="p-6 text-center text-red-600">Error loading order details</div>;
@@ -17,10 +15,12 @@ export default function OrderDetailsPage ()  {
     <div className="max-w-3xl mx-auto px-6 py-10 bg-white shadow rounded-xl mt-10">
       <h1 className="text-2xl font-bold mb-4">Order #{order.orderNumber}</h1>
       <div className="flex items-center space-x-4 mb-6">
-        <img
-          src={order.customer.avatar}
+        <Image
+          src={order.customer.avatar || '/default-avatar.png'}
           alt={order.customer.name}
-          className="w-16 h-16 rounded-full object-cover"
+          width={64}
+          height={64}
+          className="rounded-full object-cover"
         />
         <div>
           <p className="text-lg font-semibold">{order.customer.name}</p>
@@ -55,6 +55,5 @@ export default function OrderDetailsPage ()  {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

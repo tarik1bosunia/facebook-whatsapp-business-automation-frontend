@@ -1,5 +1,4 @@
 // webSocketManager.ts
-import { EventEmitter } from "events";
 import { Message } from "@/types/conversation";
 import { WebSocketEvent } from "@/types/websocket";
 import { store } from "@/lib/redux/store";

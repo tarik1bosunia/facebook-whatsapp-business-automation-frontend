@@ -62,6 +62,7 @@ export class MessageQueue {
   }
 
   private handleFailedMessage(msg: PendingMessage): void {
+    console.log(msg)
     store.dispatch(
       addNotification({
         id: `msg-failed-${Date.now()}`,

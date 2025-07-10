@@ -34,7 +34,7 @@ export const aimodelApi = createApi({
         method: 'PUT',
         body: changes,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'AIModel', id: result?.id }],
+      invalidatesTags: (result) => [{ type: 'AIModel', id: result?.id }],
     }),
     deleteAIModel: builder.mutation<void, string>({
       query: (id) => ({

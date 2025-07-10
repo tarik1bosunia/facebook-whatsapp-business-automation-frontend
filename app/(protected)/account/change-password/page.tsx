@@ -14,6 +14,20 @@ import {
 import { Eye, EyeOff, Lock } from 'lucide-react';
 import { useChangePasswordMutation } from '@/lib/redux/features/user/userApi';
 
+// Define type for API error response
+type ApiError = {
+  errors?: {
+    old_password?: string[];
+    new_password?: string[];
+  };
+  message?: string;
+};
+
+// Type guard to check if error is ApiError
+function isApiError(error: unknown): error is ApiError {
+  return typeof error === 'object' && error !== null && ('errors' in error || 'message' in error);
+}
+
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -34,19 +48,25 @@ const ChangePassword = () => {
         old_password: oldPassword,
         new_password: newPassword,
       }).unwrap();
-      
+
       setSuccessMessage(result.message);
       setOldPassword('');
       setNewPassword('');
-    } catch (error: any) {
-      if (error.errors?.old_password) {
-        setErrorMessage(error.errors.old_password[0]);
-      } else if (error.errors?.new_password) {
-        setErrorMessage(error.errors.new_password[0]);
-      } else if (error.message) {
-        setErrorMessage(error.message);
+    } catch (error: unknown) {
+      if (isApiError(error)) {
+
+        if (error.errors?.old_password) {
+          setErrorMessage(error.errors.old_password[0]);
+        } else if (error.errors?.new_password) {
+          setErrorMessage(error.errors.new_password[0]);
+        } else if (error.message) {
+          setErrorMessage(error.message);
+        } else {
+          setErrorMessage('Failed to change password. Please try again.');
+        }
+
       } else {
-        setErrorMessage('Failed to change password. Please try again.');
+        setErrorMessage('An unexpected error occurred.');
       }
     }
   };

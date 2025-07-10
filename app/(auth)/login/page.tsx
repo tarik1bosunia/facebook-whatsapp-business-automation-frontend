@@ -82,7 +82,7 @@ export default function LoginPage() {
         {/* Optional Link */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-500">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <a href="/register" className="text-indigo-600 hover:underline">
               Sign up
             </a>

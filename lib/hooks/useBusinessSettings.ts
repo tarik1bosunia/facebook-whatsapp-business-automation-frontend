@@ -10,6 +10,30 @@ import {
 } from "../redux/services/businessApi";
 import { toast } from "react-toastify";
 
+
+type ApiError = {
+  data?: {
+    detail?: string;
+    errors?: Record<string, string[]>;
+  };
+}
+
+// type BusinessProfile = {
+//   name: string;
+//   email: string;
+//   phone: string;
+//   website?: string;
+//   description?: string;
+// };
+
+// type BusinessHour = {
+//   day: string;
+//   open_time: string | null;
+//   close_time: string | null;
+//   is_closed: boolean;
+//   id?: number;
+// };
+
 const weekDays = [
   "Monday",
   "Tuesday",
@@ -94,9 +118,11 @@ export default function useBusinessSettings() {
     try {
       await updateBusinessProfile(form).unwrap();
       toast.success("Business profile updated!");
-    } catch (err: any) {
+    } catch (err: unknown) {
+
       console.error("Profile update failed", err);
-      toast.error(err?.data?.detail || "Failed to save business profile.");
+      const error = err as ApiError;
+      toast.error(error?.data?.detail || "Failed to save business profile.");
     }
   };
 
@@ -119,9 +145,11 @@ export default function useBusinessSettings() {
         }
       }
       toast.success("Business hours updated!");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Hours update failed", err);
-      toast.error(err?.data?.detail || "Failed to save business hours.");
+      const error = err as ApiError
+
+      toast.error(error?.data?.detail || "Failed to save business hours.");
     }
   };
 
@@ -148,9 +176,10 @@ export default function useBusinessSettings() {
       }
 
       toast.success("Saved successfully!");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Save failed", err);
-      toast.error(err?.data?.detail || "Failed to save. Please try again.");
+      const error = err as ApiError
+      toast.error(error?.data?.detail || "Failed to save. Please try again.");
     }
   };
 

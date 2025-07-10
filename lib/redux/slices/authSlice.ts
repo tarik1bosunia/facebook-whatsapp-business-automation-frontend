@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface FieldErrors {
+  email?: string[];
+  password?: string[];
+  [key: string]: string[] | undefined; // Allow other field errors
+}
 
 interface AuthState {
   accessToken: string | null;
@@ -7,10 +12,12 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  fieldErrors: {
-    email?: string[];
-    password?: string[];
-  };
+  fieldErrors: FieldErrors;
+}
+
+interface LoginFailurePayload {
+  error: string;
+  fieldErrors?: FieldErrors;
 }
 
 const initialDefaultState: AuthState = {
@@ -28,7 +35,7 @@ const loadState = (): AuthState => {
     if (serializedState === null) return initialDefaultState;
 
     return JSON.parse(serializedState);
-  } catch (err) {
+  } catch {
     return {
       isAuthenticated: false,
       isLoading: false,
@@ -63,7 +70,7 @@ const authSlice = createSlice({
     },
     loginFailure: (
       state,
-      action: PayloadAction<{ error: string; fieldErrors?: any }>
+      action: PayloadAction<LoginFailurePayload>
     ) => {
       state.isLoading = false;
       state.error = action.payload.error;

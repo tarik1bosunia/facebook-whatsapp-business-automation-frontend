@@ -4,7 +4,18 @@ import { toast } from "react-toastify";
 import { useAppDispatch } from "../redux/hooks/reduxHooks";
 import { useRegisterUserMutation } from "../redux/features/auth/authApi";
 import { setCredentials } from "../redux/slices/authSlice";
-import { ErrorResponse } from "@/types/auth";
+
+// type TokenResponse = {
+//   token: {
+//     refresh: string;
+//     access: string;
+//   };
+// };
+
+type ApiError = {
+  errors?: Record<string, string[]>;
+  message?: string;
+};
 
 export default function useRegister() {
   const dispatch = useAppDispatch();
@@ -36,7 +47,7 @@ export default function useRegister() {
         dispatch(setCredentials({ refreshToken: refresh, accessToken: access }));
         toast.success("Please check your email to verify your account!");
       })
-      .catch((error: any) => {
+      .catch((error:  ApiError) => {
         if (error?.errors) {
           setErrors(error.errors);
         }

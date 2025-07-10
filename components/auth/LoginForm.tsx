@@ -6,9 +6,10 @@ import { useLoginMutation } from '@/lib/redux/features/auth/authApi';
 type ApiError = {
   message?: string;
   data?: {
-    errors?: Record<string, string>;
+    errors?: Record<string, string[] | string>;
   };
 }
+
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -29,9 +30,16 @@ const LoginForm = () => {
       // Redirect to dashboard or home page
     } catch (error: unknown) {
       const apiError = error as ApiError;
+            // Convert error format to match what authSlice expects
+      const formattedErrors: Record<string, string[]> = {};
+      if (apiError.data?.errors) {
+        for (const [key, value] of Object.entries(apiError.data.errors)) {
+          formattedErrors[key] = Array.isArray(value) ? value : [value];
+        }
+      }
       dispatch(loginFailure({
         error: apiError.message || 'Login failed',
-        fieldErrors: apiError.data?.errors,
+        fieldErrors: formattedErrors,
       }));
     }
   };

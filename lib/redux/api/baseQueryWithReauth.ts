@@ -8,10 +8,10 @@ import { logout, setCredentials } from "./../slices/authSlice";
 const mutex = new Mutex();
 
 // expected token structure
-interface TokenResponse {
-  access: string;
-  refresh: string;
-}
+// interface TokenResponse {
+//   access: string;
+//   refresh: string;
+// }
 
 
 export const baseQueryWithReauth: BaseQueryFn<

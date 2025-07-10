@@ -9,13 +9,26 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
+// Define form values type
+type PasswordFormValues = {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
+// Password requirement type
+type PasswordRequirement = {
+  label: string;
+  valid: boolean;
+};
+
 const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-  const form = useForm({
+  const form = useForm<PasswordFormValues>({
     defaultValues: {
       currentPassword: '',
       newPassword: '',
@@ -26,7 +39,7 @@ const ChangePassword = () => {
   const watchNewPassword = form.watch('newPassword');
 
   // Password strength validation
-  const passwordChecks = [
+  const passwordChecks: PasswordRequirement[] = [
     { label: 'At least 8 characters', valid: watchNewPassword.length >= 8 },
     { label: 'Contains uppercase letter', valid: /[A-Z]/.test(watchNewPassword) },
     { label: 'Contains lowercase letter', valid: /[a-z]/.test(watchNewPassword) },
@@ -34,19 +47,23 @@ const ChangePassword = () => {
     { label: 'Contains special character', valid: /[!@#$%^&*(),.?":{}|<>]/.test(watchNewPassword) },
   ];
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: PasswordFormValues) => {
     if (data.newPassword !== data.confirmPassword) {
       toast.error('Passwords do not match');
       return;
     }
 
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
       toast.success('Password updated successfully');
       form.reset();
-    }, 1500);
+    } catch {
+      toast.error('Failed to update password');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -98,6 +115,7 @@ const ChangePassword = () => {
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                            aria-label={showCurrentPassword ? "Hide password" : "Show password"}
                           >
                             {showCurrentPassword ? (
                               <EyeOff className="h-4 w-4" />
@@ -131,6 +149,7 @@ const ChangePassword = () => {
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             onClick={() => setShowNewPassword(!showNewPassword)}
+                            aria-label={showNewPassword ? "Hide password" : "Show password"}
                           >
                             {showNewPassword ? (
                               <EyeOff className="h-4 w-4" />
@@ -185,6 +204,7 @@ const ChangePassword = () => {
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                           >
                             {showConfirmPassword ? (
                               <EyeOff className="h-4 w-4" />
@@ -208,7 +228,7 @@ const ChangePassword = () => {
                     <Lock className="h-4 w-4" />
                     {loading ? 'Updating...' : 'Update Password'}
                   </Button>
-                  <Link href="/account">
+                  <Link href="/account" legacyBehavior>
                     <Button variant="outline">Cancel</Button>
                   </Link>
                 </div>

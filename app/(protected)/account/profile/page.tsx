@@ -10,10 +10,19 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
+// Define type for form values
+type ProfileFormValues = {
+  firstName: string;
+  lastName: string;
+  displayName: string;
+  phone: string;
+  bio: string;
+};
+
 const Profile = () => {
   const [loading, setLoading] = useState(false);
   
-  const form = useForm({
+  const form = useForm<ProfileFormValues>({
     defaultValues: {
       firstName: 'John',
       lastName: 'Doe',
@@ -23,13 +32,16 @@ const Profile = () => {
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (values: ProfileFormValues) => {
+    console.log("values", values)
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
       toast.success('Profile updated successfully');
-    }, 1500);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

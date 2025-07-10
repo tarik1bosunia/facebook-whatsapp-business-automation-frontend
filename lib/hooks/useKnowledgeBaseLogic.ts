@@ -63,7 +63,7 @@ export const useKnowledgeBaseLogic = (searchTerm: string) => {
       toast.success('FAQ added');
       cancelNewFaq();
       refetch(); // force UI sync
-    } catch (err) {
+    } catch {
       toast.error('Failed to add FAQ');
     }
   };

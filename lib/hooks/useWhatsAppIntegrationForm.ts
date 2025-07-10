@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { IntegrationConfig, IntegrationResponse } from "@/types/integration";
 import {
@@ -66,13 +66,7 @@ export default function useWhatsAppIntegrationForm() {
     }
   }, [data]);
 
-  useEffect(() => {
-    if (fetchError) {
-      handleError(fetchError);
-    }
-  }, [fetchError]);
-
-  const handleError = (error: FetchBaseQueryError | SerializedError) => {
+  const handleError = useCallback((error: FetchBaseQueryError | SerializedError) => {
     let errorMessage = "An unexpected error occurred";
 
     if ("data" in error) {
@@ -89,7 +83,15 @@ export default function useWhatsAppIntegrationForm() {
     }
 
     toast.error(errorMessage);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (fetchError) {
+      handleError(fetchError);
+    }
+  }, [fetchError, handleError]);
+
+
 
   const handleSubmit = async () => {
     const payload = {
