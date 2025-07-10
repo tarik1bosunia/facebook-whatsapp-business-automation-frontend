@@ -1,4 +1,5 @@
 // services/integrationsApi.ts
+import { ApiResponse } from "@/types/apiResponse";
 import { apiSlice } from "../api/apiSlice";
 
 const FACEBOOK_INTIGRATIONS_URL = "business/facebook-integration/";
@@ -14,18 +15,12 @@ export interface IntegrationConfig {
   verify_token?: string;
 }
 
-// Changed: Enhanced error response type
-export type IntegrationResponse = IntegrationConfig & {
-  errors?: {
-    [key: string]: string[];
-  };
-  message?: string; // Added for general error messages
-};
+
 
 
 export const integrationsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getFacebookIntegration: builder.query<IntegrationResponse, void>({
+    getFacebookIntegration: builder.query<ApiResponse<IntegrationConfig>, void>({
       query: () => FACEBOOK_INTIGRATIONS_URL,
       providesTags: ['FacebookIntegration'],
       // Changed: Added transformErrorResponse to standardize error format
@@ -37,27 +32,16 @@ export const integrationsApi = apiSlice.injectEndpoints({
         };
       }
     }),
-    updateFacebookIntegration: builder.mutation<IntegrationResponse, Partial<IntegrationConfig>>({
+    updateFacebookIntegration: builder.mutation<ApiResponse<IntegrationConfig>, Partial<IntegrationConfig>>({
       query: (data) => ({
         url: FACEBOOK_INTIGRATIONS_URL,
         method: "PATCH",
         body: data,
       }),
       invalidatesTags: ['FacebookIntegration'],
-      // Changed: Added transformErrorResponse to standardize error format
-      transformErrorResponse: (response) => {
-        if (typeof response === 'object' && response !== null) {
-          return response;
-        }
-        return {
-          errors: {
-            general: [typeof response === 'string' ? response : 'Failed to update Facebook integration']
-          }
-        };
-      }
     }),
 
-    getWhatsAppIntegration: builder.query<IntegrationResponse, void>({
+    getWhatsAppIntegration: builder.query<ApiResponse<IntegrationConfig>, void>({
       query: () => WHATSAPP_INTIGRATIONS_URL,
       providesTags: ['WhatsAppIntegration'],
       transformErrorResponse: (response) => {
@@ -68,7 +52,7 @@ export const integrationsApi = apiSlice.injectEndpoints({
         };
       }
     }),
-    updateWhatsAppIntegration: builder.mutation<IntegrationResponse, Partial<IntegrationConfig>>({
+    updateWhatsAppIntegration: builder.mutation<ApiResponse<IntegrationConfig>, Partial<IntegrationConfig>>({
       query: (data) => ({
         url: WHATSAPP_INTIGRATIONS_URL,
         method: "PATCH",

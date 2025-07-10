@@ -1,5 +1,6 @@
 import { LoginRequest, LoginResponse } from "@/types/auth";
 import { apiSlice } from "../../api/apiSlice";
+import { ApiResponse } from "@/types/apiResponse";
 
 export interface FieldError {
   [key: string]: string[]; // key is field name like "email", "password", etc.
@@ -56,7 +57,7 @@ const authApi = apiSlice.injectEndpoints({
       },
     }),
 
-    login: builder.mutation<LoginResponse, LoginRequest>({
+    login: builder.mutation<ApiResponse<LoginResponse>, LoginRequest>({
       query: (credentials) => ({
         url: "account/login/",
         method: "POST",
@@ -115,6 +116,7 @@ const authApi = apiSlice.injectEndpoints({
   }),
   overrideExisting: false,
 });
+
 
 export const {
   useGetUsersQuery,

@@ -1,13 +1,11 @@
 'use client';
 
-
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
   Button,
   Switch,
   Input,
@@ -17,10 +15,10 @@ import {
 import useWhatsAppIntegrationForm from "@/lib/hooks/useWhatsAppIntegrationForm";
 import { MessageCircle } from "lucide-react";
 
-
-export default function FacebookIntegrationCard() {
+export default function WhatsAppIntegrationCard() {
   const {
     formData,
+    fieldErrors,
     handleChange,
     handleCheckboxChange,
     handleSubmit,
@@ -30,7 +28,6 @@ export default function FacebookIntegrationCard() {
     isUpdating,
     isConnected,
     isDirty,
-    errors,
     platformId,
   } = useWhatsAppIntegrationForm();
 
@@ -61,7 +58,7 @@ export default function FacebookIntegrationCard() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5 text-green-600" />
+            <MessageCircle className="h-5 w-5 text-green-600" />
             WhatsApp Integration
           </CardTitle>
           <CardDescription>
@@ -72,16 +69,18 @@ export default function FacebookIntegrationCard() {
         <CardContent className="space-y-4">
           <div className="space-y-4">
             <div>
-              <Label htmlFor="platform_id"> Phone Number ID </Label>
+              <Label htmlFor="platform_id">Phone Number ID</Label>
               <Input
                 id="platform_id"
                 value={formData.platform_id}
                 onChange={handleChange("platform_id")}
                 disabled={isUpdating}
               />
-              {errors.platform_id && (
-                <p className="text-sm text-red-500">{errors.platform_id}</p>
-              )}
+              {fieldErrors.platform_id?.map((error, index) => (
+                <p key={index} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
             </div>
 
             <div>
@@ -94,9 +93,11 @@ export default function FacebookIntegrationCard() {
                 disabled={isUpdating}
                 placeholder={isConnected ? "********" : "Enter token"}
               />
-              {errors.access_token && (
-                <p className="text-sm text-red-500">{errors.access_token}</p>
-              )}
+              {fieldErrors.access_token?.map((error, index) => (
+                <p key={index} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
             </div>
 
             <div>
@@ -109,9 +110,11 @@ export default function FacebookIntegrationCard() {
                 disabled={isUpdating}
                 placeholder={isConnected ? "********" : "Enter token"}
               />
-              {errors.verify_token && (
-                <p className="text-sm text-red-500">{errors.verify_token}</p>
-              )}
+              {fieldErrors.verify_token?.map((error, index) => (
+                <p key={index} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
             </div>
           </div>
 
@@ -153,15 +156,12 @@ export default function FacebookIntegrationCard() {
                       Automatically respond to messages
                     </p>
                   </div>
-                <Switch
-                  id="auto-reply"
-                  checked={formData.is_send_auto_reply}
-                  onCheckedChange={handleCheckboxChange("is_send_auto_reply")}
-                  disabled={isUpdating}
-                />
-
-
-                  
+                  <Switch
+                    id="auto-reply"
+                    checked={formData.is_send_auto_reply}
+                    onCheckedChange={handleCheckboxChange("is_send_auto_reply")}
+                    disabled={isUpdating}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
@@ -170,12 +170,12 @@ export default function FacebookIntegrationCard() {
                       Receive message alerts
                     </p>
                   </div>
-                <Switch
-                  id="notifications"
-                  checked={formData.is_send_notification}
-                  onCheckedChange={handleCheckboxChange("is_send_notification")}
-                  disabled={isUpdating}
-                />
+                  <Switch
+                    id="notifications"
+                    checked={formData.is_send_notification}
+                    onCheckedChange={handleCheckboxChange("is_send_notification")}
+                    disabled={isUpdating}
+                  />
                 </div>
               </div>
             )}

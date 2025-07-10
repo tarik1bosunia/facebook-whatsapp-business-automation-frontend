@@ -19,7 +19,13 @@ export default function PublicLayout({
         }
     }, [isAuthenticated, router])
 
-    if (isAuthenticated) return null
+  if (isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg font-medium">Redirecting to dashboard...</p>
+      </div>
+    );
+  }
 
     return (
 

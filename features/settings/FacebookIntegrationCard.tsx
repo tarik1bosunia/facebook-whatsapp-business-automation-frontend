@@ -7,7 +7,6 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
   Button,
   Switch,
   Input,
@@ -19,6 +18,7 @@ import { useFacebookIntegrationForm } from "@/lib/hooks/useFacebookIntegrationFo
 export default function FacebookIntegrationCard() {
   const {
     formData,
+    fieldErrors,
     handleChange,
     handleCheckboxChange,
     handleSubmit,
@@ -28,7 +28,6 @@ export default function FacebookIntegrationCard() {
     isUpdating,
     isConnected,
     isDirty,
-    errors,
     platformId,
   } = useFacebookIntegrationForm();
 
@@ -77,9 +76,11 @@ export default function FacebookIntegrationCard() {
                 onChange={handleChange("platform_id")}
                 disabled={isUpdating}
               />
-              {errors.platform_id && (
-                <p className="text-sm text-red-500">{errors.platform_id}</p>
-              )}
+              {fieldErrors.platform_id?.map((error, index) => (
+                <p key={index} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
             </div>
 
             <div>
@@ -92,9 +93,11 @@ export default function FacebookIntegrationCard() {
                 disabled={isUpdating}
                 placeholder={isConnected ? "********" : "Enter token"}
               />
-              {errors.access_token && (
-                <p className="text-sm text-red-500">{errors.access_token}</p>
-              )}
+              {fieldErrors.access_token?.map((error, index) => (
+                <p key={index} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
             </div>
 
             <div>
@@ -107,9 +110,11 @@ export default function FacebookIntegrationCard() {
                 disabled={isUpdating}
                 placeholder={isConnected ? "********" : "Enter token"}
               />
-              {errors.verify_token && (
-                <p className="text-sm text-red-500">{errors.verify_token}</p>
-              )}
+              {fieldErrors.verify_token?.map((error, index) => (
+                <p key={index} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
             </div>
           </div>
 
@@ -151,15 +156,12 @@ export default function FacebookIntegrationCard() {
                       Automatically respond to messages
                     </p>
                   </div>
-                <Switch
-                  id="auto-reply"
-                  checked={formData.is_send_auto_reply}
-                  onCheckedChange={handleCheckboxChange("is_send_auto_reply")}
-                  disabled={isUpdating}
-                />
-
-
-                  
+                  <Switch
+                    id="auto-reply"
+                    checked={formData.is_send_auto_reply}
+                    onCheckedChange={handleCheckboxChange("is_send_auto_reply")}
+                    disabled={isUpdating}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
@@ -168,12 +170,12 @@ export default function FacebookIntegrationCard() {
                       Receive message alerts
                     </p>
                   </div>
-                <Switch
-                  id="notifications"
-                  checked={formData.is_send_notification}
-                  onCheckedChange={handleCheckboxChange("is_send_notification")}
-                  disabled={isUpdating}
-                />
+                  <Switch
+                    id="notifications"
+                    checked={formData.is_send_notification}
+                    onCheckedChange={handleCheckboxChange("is_send_notification")}
+                    disabled={isUpdating}
+                  />
                 </div>
               </div>
             )}
