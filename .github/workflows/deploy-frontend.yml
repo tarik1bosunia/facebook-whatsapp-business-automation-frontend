@@ -57,7 +57,7 @@ jobs:
           docker stop fba-frontend || true
           docker rm fba-frontend || true
           docker run -d \
-            --name fba-frontend \  # Updated container name to match
+            --name fba-frontend \
             --restart unless-stopped \
             -p 3000:3000 \
             -e NODE_ENV=production \
