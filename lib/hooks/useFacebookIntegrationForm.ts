@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { IntegrationConfig, IntegrationResponse } from "@/types/integration";
+import { IntegrationConfig } from "@/types/integration";
 import {
   useGetFacebookIntegrationQuery,
   useUpdateFacebookIntegrationMutation,
