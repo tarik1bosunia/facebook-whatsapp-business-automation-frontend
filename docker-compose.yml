@@ -1,12 +1,12 @@
-version: "3.9"
+
 services:
-  fba-frontend:
+  frontend:
     build:
       context: .
-      target: runner
+      dockerfile: Dockerfile
     container_name: fba-frontend
-    restart: unless-stopped
+    restart: always
     env_file:
       - .env
     ports:
-      - "3000:3000"  # Expose app to Nginx
+      - "3000:3000"

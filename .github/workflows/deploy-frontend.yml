@@ -9,16 +9,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up SSH
+      - name: 🔐 Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-      # Upload source code to VPS
-      - name: Upload project to VPS
+      - name: 📦 Upload project to VPS
         run: |
           mkdir deploy
           cp -r package.json package-lock.json public Dockerfile docker-compose.yml .env.example deploy/
@@ -26,16 +25,22 @@ jobs:
           tar -czf fba-frontend.tar.gz -C deploy .
           scp -o StrictHostKeyChecking=no fba-frontend.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/
 
-
-      # Deploy and build inside Docker on VPS
-      - name: Deploy on VPS
+      - name: 🚀 Deploy on VPS via SSH
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            set -e
             cd /home/${{ secrets.VPS_USER }}
             rm -rf fba-frontend && mkdir fba-frontend
             tar -xzf fba-frontend.tar.gz -C fba-frontend
             cd fba-frontend
+
             echo "${{ secrets.ENV_PRODUCTION }}" > .env
+
+            echo "🧹 Clean up old containers..."
             docker compose down
+
+            echo "🔧 Build and start new containers..."
             docker compose up --build -d
+
+            echo "✅ Deployed fba-frontend successfully"
           EOF
