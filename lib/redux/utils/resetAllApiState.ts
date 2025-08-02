@@ -6,8 +6,9 @@ import { productsApi } from "../features/productsApi";
 import { userApi } from "../features/user/userApi";
 import { userApi as userSuperAdminApi } from "../features/superadmin/userApi";
 import { activityApi } from "../features/activityApi";
+import { AppDispatch } from "../store";
 
-export const resetAllApiState = () => (dispatch: any) => {
+export const resetAllApiState = () => (dispatch: AppDispatch) => {
   dispatch(conversationApi.util.resetApiState());
   dispatch(authApi.util.resetApiState());
   dispatch(businessApi.util.resetApiState());
