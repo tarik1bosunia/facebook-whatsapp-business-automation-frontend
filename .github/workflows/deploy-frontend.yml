@@ -46,6 +46,10 @@ jobs:
         cache-to: type=gha,mode=max
         platforms: linux/amd64
         # platforms: linux/amd64,linux/arm64
+        build-args: |
+          NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+          NEXT_PUBLIC_WS_BACKEND_URL=${{ secrets.NEXT_PUBLIC_WS_BACKEND_URL }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1
@@ -63,9 +67,6 @@ jobs:
             -p 3000:3000 \
             -e NODE_ENV=production \
             -e NEXT_TELEMETRY_DISABLED=1 \
-            -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }} \
-            -e NEXT_PUBLIC_WS_BACKEND_URL=${{ secrets.NEXT_PUBLIC_WS_BACKEND_URL }} \
-            -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
             -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
             -v /app/.next/cache:/app/.next/cache \
             ghcr.io/${{ env.IMAGE_NAME }}:latest

@@ -1,5 +1,15 @@
 FROM node:22-alpine AS base
 
+# Accept build-time environment variables (NEXT_PUBLIC_*)
+ARG NEXT_PUBLIC_API_BASE_URL
+ARG NEXT_PUBLIC_WS_BACKEND_URL
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
+
+# Make them available to Next.js at build time
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+ENV NEXT_PUBLIC_WS_BACKEND_URL=${NEXT_PUBLIC_WS_BACKEND_URL}
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
