@@ -2,7 +2,7 @@ name: Deploy fba-frontend to VPS
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -17,30 +17,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies and build
+      # Upload source code to VPS
+      - name: Upload project to VPS
         run: |
-          npm ci
-          npm run build
-          cp -r .next/static .next/standalone/.next/
-          cp -r public .next/standalone/
-
-      - name: Create .env.production from GitHub secret
-        run: |
-          echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
-
-      - name: Package for deployment
-        run: |
-          mkdir deploy &&           cp -r .next/standalone/* deploy/ &&           cp -r .next/static deploy/.next/ &&           cp -r public deploy/ &&           cp Dockerfile docker-compose.yml package.json package-lock.json .env.production deploy/ &&           cd deploy && tar -czf ../fba-frontend.tar.gz .
-
-      - name: Upload to VPS
-        run: |
+          tar -czf fba-frontend.tar.gz .
           scp -o StrictHostKeyChecking=no fba-frontend.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/
 
+      # Deploy and build inside Docker on VPS
       - name: Deploy on VPS
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
@@ -48,6 +31,7 @@ jobs:
             rm -rf fba-frontend && mkdir fba-frontend
             tar -xzf fba-frontend.tar.gz -C fba-frontend
             cd fba-frontend
-            cp .env.production .env
+            echo "${{ secrets.ENV_PRODUCTION }}" > .env
+            docker compose down
             docker compose up --build -d
           EOF
