@@ -1,1 +1,1 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_HOST || 'https://apirateteach.ru.ac.bd'
+export const API_BASE_URL = process.env.NEXT_PUBLIC_HOST || 'https://api.smartchatbot.click'
