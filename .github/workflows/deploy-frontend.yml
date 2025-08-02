@@ -26,21 +26,16 @@ jobs:
         run: |
           npm ci
           npm run build
+          cp -r .next/static .next/standalone/.next/
+          cp -r public .next/standalone/
 
       - name: Create .env.production from GitHub secret
         run: |
           echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
 
-      - name: Archive build files
+      - name: Package for deployment
         run: |
-          tar -czf fba-frontend.tar.gz \
-            .next \
-            public \
-            package.json \
-            package-lock.json \
-            Dockerfile \
-            docker-compose.yml \
-            .env.production
+          mkdir deploy &&           cp -r .next/standalone/* deploy/ &&           cp -r .next/static deploy/.next/ &&           cp -r public deploy/ &&           cp Dockerfile docker-compose.yml package.json package-lock.json .env.production deploy/ &&           cd deploy && tar -czf ../fba-frontend.tar.gz .
 
       - name: Upload to VPS
         run: |
