@@ -1,4 +1,4 @@
-name: Deploy Next.js to VPS
+name: Deploy fba-frontend to VPS
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up SSH
@@ -17,23 +17,42 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Build and package
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies and build
         run: |
           npm ci
           npm run build
-          tar -czf nextjs.tar.gz .next public package.json package-lock.json docker-compose.yml Dockerfile .env.production
+
+      - name: Create .env.production from GitHub secret
+        run: |
+          echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
+
+      - name: Archive build files
+        run: |
+          tar -czf fba-frontend.tar.gz \
+            .next \
+            public \
+            package.json \
+            package-lock.json \
+            Dockerfile \
+            docker-compose.yml \
+            .env.production
 
       - name: Upload to VPS
         run: |
-          scp nextjs.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/
+          scp fba-frontend.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/
 
       - name: Deploy on VPS
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd /home/${{ secrets.VPS_USER }}
-            rm -rf nextjs && mkdir nextjs
-            tar -xzf nextjs.tar.gz -C nextjs
-            cd nextjs
+            rm -rf fba-frontend && mkdir fba-frontend
+            tar -xzf fba-frontend.tar.gz -C fba-frontend
+            cd fba-frontend
             cp .env.production .env
             docker compose up --build -d
           EOF
