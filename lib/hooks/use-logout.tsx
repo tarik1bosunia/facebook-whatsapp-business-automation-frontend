@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../redux/hooks/reduxHooks";
-import { logoutAndReset } from "../redux/slices/authSlice";
+import { logout } from "../redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useLogoutMutation } from "../redux/features/auth/authApi";
 
@@ -25,7 +25,7 @@ export default function useLogout() {
         } catch (error) {
             console.log("error", error)
         }
-        dispatch(logoutAndReset());
+        dispatch(logout());
         
         toast.success("Logout successful!");
         router.push("/login");
