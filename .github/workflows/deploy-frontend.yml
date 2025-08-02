@@ -64,6 +64,7 @@ jobs:
             -e NODE_ENV=production \
             -e NEXT_TELEMETRY_DISABLED=1 \
             -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }} \
+            -e NEXT_PUBLIC_WS_BACKEND_URL=${{ secrets.NEXT_PUBLIC_WS_BACKEND_URL }} \
             -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
             -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
             -v /app/.next/cache:/app/.next/cache \
