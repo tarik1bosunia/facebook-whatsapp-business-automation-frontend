@@ -44,11 +44,11 @@ jobs:
 
       - name: Upload to VPS
         run: |
-          scp fba-frontend.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/
+          scp -o StrictHostKeyChecking=no fba-frontend.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/
 
       - name: Deploy on VPS
         run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd /home/${{ secrets.VPS_USER }}
             rm -rf fba-frontend && mkdir fba-frontend
             tar -xzf fba-frontend.tar.gz -C fba-frontend
