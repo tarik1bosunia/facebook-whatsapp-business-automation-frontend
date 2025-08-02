@@ -17,30 +17,36 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: 📦 Upload project to VPS
+      - name: 📦 Archive full project (excluding sensitive/dev files)
         run: |
-          mkdir deploy
-          cp -r package.json package-lock.json public Dockerfile docker-compose.yml .env.example deploy/
-          cp -r app pages next.config.js tsconfig.json deploy/ || true
-          tar -czf fba-frontend.tar.gz -C deploy .
+          tar --exclude='.git' \
+              --exclude='node_modules' \
+              --exclude='.env' \
+              -czf fba-frontend.tar.gz .
+
+      - name: 📤 Upload project to VPS
+        run: |
           scp -o StrictHostKeyChecking=no fba-frontend.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/
 
-      - name: 🚀 Deploy on VPS via SSH
+      - name: 🚀 Deploy on VPS
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             set -e
             cd /home/${{ secrets.VPS_USER }}
+
+            echo "📂 Extracting frontend..."
             rm -rf fba-frontend && mkdir fba-frontend
             tar -xzf fba-frontend.tar.gz -C fba-frontend
             cd fba-frontend
 
+            echo "🔐 Writing .env file..."
             echo "${{ secrets.ENV_PRODUCTION }}" > .env
 
-            echo "🧹 Clean up old containers..."
-            docker compose down
+            echo "🧹 Stopping old containers..."
+            docker compose down || true
 
-            echo "🔧 Build and start new containers..."
+            echo "⚙️ Building and starting containers..."
             docker compose up --build -d
 
-            echo "✅ Deployed fba-frontend successfully"
+            echo "✅ Deployment complete"
           EOF
