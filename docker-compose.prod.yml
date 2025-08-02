@@ -2,7 +2,8 @@
 version: '3.8'
 services:
   web:
-    image: your-docker-registry/fba-frontend:latest # Use the pre-built image from registry
+    # image: <registry-name>/<repository-name>:<tag> # Use your actual registry, repo, and tag
+    image: tarik1bosunia/fba-frontend:latest
     container_name: fba-frontend
     ports:
       - "3000:3000" # Map container port to host port (adjust if using reverse proxy)

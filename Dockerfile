@@ -4,11 +4,6 @@
 # Use a minimal Node.js Alpine image for a small footprint
 FROM node:22.14-alpine AS base
 
-# Set environment variables for pnpm if used, otherwise remove
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
 # Add necessary system libraries for Node.js
 RUN apk add --no-cache libc6-compat
 
@@ -22,11 +17,11 @@ FROM base AS builder
 WORKDIR /app
 
 # Copy package.json and lock file first to leverage Docker cache
-# Use npm ci for npm or pnpm install --frozen-lockfile for pnpm
-COPY package.json pnpm-lock.yaml* ./ 
-# Adjust for your lockfile (package-lock.json, yarn.lock, pnpm-lock.yaml)
-# RUN npm ci --prefer-offline --no-audit --ignore-scripts --omit=dev
-RUN pnpm install --frozen-lockfile
+# Ensure package-lock.json (or your package manager's lockfile) is present in the root of your project
+ # Explicitly copy package.json and package-lock.json
+
+COPY package.json package-lock.json./
+RUN npm ci
 
 # Copy the rest of the application code
 COPY . .
@@ -36,7 +31,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the Next.js application in standalone mode
 # Ensure next.config.js has output: 'standalone'
-RUN pnpm build
+RUN npm run build
 
 # --- Runner Stage (Final Production Image) ---
 FROM base AS runner
@@ -52,7 +47,7 @@ USER nextjs
 # Copy the standalone output from the builder stage
 # The.next/standalone directory contains the minimal server and necessary files
 # Crucially, also copy public and.next/static as they are not included by default in standalone output
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./ 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
