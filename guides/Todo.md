@@ -9,3 +9,6 @@
 5. In Settigs Need to Work With User Management
 6. when logged in it is not removing previous conversation need to fix it
 7. add product category UI
+
+# TODO must:
+1. there is an issue with caching , after logout i log in with another acount. but the prevous account user data still showing. when reload the new user data come
