@@ -13,6 +13,7 @@ import {
   setConnectionStatus,
 } from "@/lib/redux/slices/chatSlice";
 import { AppNotification } from "@/types/chat";
+import { WS_BACKEND_URL } from "@/constants";
 
 class WebSocketManager {
   public static instance: WebSocketManager;
@@ -91,8 +92,7 @@ class WebSocketManager {
 
   private buildWebSocketUrl(token: string): string {
     const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const wsBackendRoot = "127.0.0.1:8000";
-    return `${wsProtocol}://${wsBackendRoot}/ws/chat/?token=${token}`;
+    return `${wsProtocol}://${WS_BACKEND_URL}/ws/chat/?token=${token}`;
   }
 
   private setupEventHandlers(): void {

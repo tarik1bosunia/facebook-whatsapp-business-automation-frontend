@@ -35,6 +35,7 @@ import { Conversation } from "@/types/conversation";
 import useConversationMessages from "@/features/conversations/hooks/useConversationMessages";
 import ContactsMessage from "./ContactsMessage";
 import MediaAttachmentMenu from "./MediaAttachmentMenu";
+import { API_BASE_URL } from "@/constants";
 
 interface ConversationViewProps {
   conversation?: Conversation;
@@ -140,7 +141,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
     const mediaURL = mediaUrl 
       ? mediaUrl 
       : mediaId
-        ? `http://127.0.0.1:8000/api/messaging/media-proxy?media_id=${mediaId}`
+        ? `${API_BASE_URL}/api/messaging/media-proxy?media_id=${mediaId}`
         : null;
 
     if (!mediaURL) return null;

@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +28,7 @@ import ToggleAutoReplyButton from "./ToggleAutoReply";
 import { Conversation } from "@/types/conversation";
 import useConversationMessages from "./hooks/useConversationMessages";
 import ContactsMessage from "./ContactsMessage";
+import { API_BASE_URL } from "@/constants";
 
 
 interface ConversationViewProps {
@@ -89,7 +89,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
   const mediaURL = mediaUrl 
     ? mediaUrl 
     : mediaId
-      ? `http://127.0.0.1:8000/api/messaging/media-proxy?media_id=${mediaId}`
+      ? `${API_BASE_URL}/api/messaging/media-proxy?media_id=${mediaId}`
       : null;
 
     if (!mediaURL) return null;  

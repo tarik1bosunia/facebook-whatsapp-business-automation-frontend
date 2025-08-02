@@ -19,6 +19,7 @@ import {
 } from "@/lib/redux/slices/chatSlice";
 import { AppNotification } from "@/types/chat";
 import { isTokenExpired } from "../utils/jwt";
+import { WS_BACKEND_URL } from "@/constants";
 
 class WebSocketManager {
   public static instance: WebSocketManager;
@@ -165,8 +166,7 @@ class WebSocketManager {
 
       // Prepare WebSocket URL
       const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-      const wsBackendRoot = "127.0.0.1:8000";
-      const wsURL = `${wsProtocol}://${wsBackendRoot}/ws/chat/?token=${this.authToken}`;
+      const wsURL = `${wsProtocol}://${WS_BACKEND_URL}/ws/chat/?token=${this.authToken}`;
       console.log("WebSocket connecting to:", wsURL);
 
       // Create new WebSocket connection

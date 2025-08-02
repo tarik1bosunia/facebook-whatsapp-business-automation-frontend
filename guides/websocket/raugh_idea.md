@@ -24,7 +24,7 @@ class WebSocketManager {
     if (this.socket) return;
 
     const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const wsUrl = `${wsProtocol}://127.0.0.1:8000/ws/notifications/?user_id=${userId}`;
+    const wsUrl = `${wsProtocol}://${WS_BACKEND_URL}/ws/notifications/?user_id=${userId}`;
 
     this.socket = new WebSocket(wsUrl);
 
@@ -414,7 +414,7 @@ class WebSocketManager {
 
   public connect(userId: string) {
     const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const wsUrl = `${wsProtocol}://127.0.0.1:8000/ws/notifications/?user_id=${userId}`;
+    const wsUrl = `${wsProtocol}://${WS_BACKEND_URL}/ws/notifications/?user_id=${userId}`;
     
     this.socket = new WebSocket(wsUrl);
     

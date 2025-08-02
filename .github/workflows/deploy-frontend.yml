@@ -44,7 +44,8 @@ jobs:
           ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
+        # platforms: linux/amd64,linux/arm64
 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1
@@ -62,5 +63,8 @@ jobs:
             -p 3000:3000 \
             -e NODE_ENV=production \
             -e NEXT_TELEMETRY_DISABLED=1 \
+            -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }} \
+            -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
+            -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
             -v /app/.next/cache:/app/.next/cache \
             ghcr.io/${{ env.IMAGE_NAME }}:latest
