@@ -1,12 +1,5 @@
 FROM node:22-alpine AS base
 
-# Accept build-time environment variables (NEXT_PUBLIC_*)
-ARG NEXT_PUBLIC_API_BASE_URL
-ARG NEXT_PUBLIC_WS_BACKEND_URL
-ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
-ENV NEXT_PUBLIC_WS_BACKEND_URL=$NEXT_PUBLIC_WS_BACKEND_URL
-
-
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
@@ -26,9 +19,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN \
-  if [ -f yarn.lock ]; then yarn run build || (echo "⚠️ Build failed. Dumping logs..." && cat .next/trace || true && exit 1); \
-  elif [ -f package-lock.json ]; then npm run build || (echo "⚠️ Build failed. Dumping logs..." && cat .next/trace || true && exit 1); \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build || (echo "⚠️ Build failed. Dumping logs..." && cat .next/trace || true && exit 1); \
+  if [ -f yarn.lock ]; then yarn run build; \
+  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
