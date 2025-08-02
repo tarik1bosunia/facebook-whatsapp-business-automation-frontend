@@ -14,3 +14,9 @@
 - npm install date-fns
 MCP server, ai agent
 products , services, new campaign
+
+
+#  deploy
+```sh
+npm ci
+```

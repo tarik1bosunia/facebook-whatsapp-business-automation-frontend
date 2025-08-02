@@ -2,7 +2,7 @@
 
 # --- Base Stage ---
 # Use a minimal Node.js Alpine image for a small footprint
-FROM node:22.14-alpine AS base
+FROM node:22.14-alpine AS bas
 
 # Add necessary system libraries for Node.js
 RUN apk add --no-cache libc6-compat
@@ -17,10 +17,9 @@ FROM base AS builder
 WORKDIR /app
 
 # Copy package.json and lock file first to leverage Docker cache
-# Ensure package-lock.json (or your package manager's lockfile) is present in the root of your project
- # Explicitly copy package.json and package-lock.json
-
-COPY package.json package-lock.json./
+# IMPORTANT: Ensure package-lock.json is present in the root of your project and committed to Git.
+# npm ci requires this file for deterministic installations.
+COPY package.json package-lock.json.
 RUN npm ci
 
 # Copy the rest of the application code
@@ -47,7 +46,7 @@ USER nextjs
 # Copy the standalone output from the builder stage
 # The.next/standalone directory contains the minimal server and necessary files
 # Crucially, also copy public and.next/static as they are not included by default in standalone output
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./ 
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
