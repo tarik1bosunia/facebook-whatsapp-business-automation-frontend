@@ -1,0 +1,19 @@
+# docker-compose.prod.yml for production deployment on VPS
+version: '3.8'
+services:
+  web:
+    image: your-docker-registry/fba-frontend:latest # Use the pre-built image from registry
+    container_name: fba-frontend
+    ports:
+      - "3000:3000" # Map container port to host port (adjust if using reverse proxy)
+    restart: always # Ensure the container restarts automatically
+    environment:
+      # Production-specific environment variables, loaded from.env file on VPS
+      # For example:
+      # NEXT_PUBLIC_API_URL: https://api.yourdomain.com
+      # DATABASE_URL: postgres://user:password@db:5432/mydb
+    # networks:
+    #   - app_network # Define if interacting with other services
+# networks:
+#   app_network:
+#     driver: bridge
