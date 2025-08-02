@@ -20,10 +20,10 @@ jobs:
       # Upload source code to VPS
       - name: Upload project to VPS
         run: |
-          tar --warning=no-file-changed \
-              --exclude=".git" \
-              --exclude=".github" \
-              -czf fba-frontend.tar.gz .
+          mkdir deploy
+          cp -r package.json package-lock.json public Dockerfile docker-compose.yml .env.example deploy/
+          cp -r app pages next.config.js tsconfig.json deploy/ || true
+          tar -czf fba-frontend.tar.gz -C deploy .
           scp -o StrictHostKeyChecking=no fba-frontend.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/
 
 
