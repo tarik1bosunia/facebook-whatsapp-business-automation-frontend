@@ -1,55 +1,35 @@
-FROM node:22-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
-
-# 🔼 Upgrade npm here
-RUN npm install -g npm@11.5.2
+# Stage 1: Build the Next.js application
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Copy package.json and package-lock.json (or yarn.lock/pnpm-lock.yaml)
+COPY package.json ./
+COPY package-lock.json ./ 
 
-FROM base AS builder
+# Install dependencies
+RUN npm install # Or yarn install, pnpm install
 
-
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy the rest of the application code
 COPY . .
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Build the Next.js application for production
+RUN npm run build # Or yarn build, pnpm build
 
-FROM base AS runner
+# Stage 2: Create the production image
+FROM node:22-alpine AS runner
+
 WORKDIR /app
 
-ENV NODE_ENV=production
+# Set environment variables for production
+ENV NODE_ENV production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
+# Copy necessary files from the builder stage
+COPY --from=builder /app/.next/standalone ./standalone
 COPY --from=builder /app/public ./public
 
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
+# Expose the port Next.js runs on
 EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+
+# Command to run the Next.js application in standalone mode
+CMD ["node", "standalone/server.js"]
