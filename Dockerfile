@@ -5,7 +5,7 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 
 # 🔼 Upgrade npm here
-RUN npm install -g 
+RUN npm install -g npm@11.5.2
 
 WORKDIR /app
 
