@@ -21,9 +21,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm install -g npm@11.5.2
 
+RUN npm install -g npm@11.5.2 # optional: upgrade npm
+
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f package-lock.json ]; then npm run build || (echo "❌ npm run build failed" && exit 1); \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
   else echo "Lockfile not found." && exit 1; \
   fi
