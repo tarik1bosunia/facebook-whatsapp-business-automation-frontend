@@ -1,35 +1,51 @@
-# Stage 1: Build the Next.js application
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
 
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock/pnpm-lock.yaml)
-COPY package.json ./
-COPY package-lock.json ./ 
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-# Install dependencies
-RUN npm install # Or yarn install, pnpm install
+FROM base AS builder
 
-# Copy the rest of the application code
+
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build the Next.js application for production
-RUN npm run build
+RUN \
+  if [ -f yarn.lock ]; then yarn run build; \
+  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-# Stage 2: Create the production image
-FROM node:22-alpine AS runner
-
+FROM base AS runner
 WORKDIR /app
 
-# Set environment variables for production
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
-# Copy necessary files from the builder stage
-COPY --from=builder /app/.next/standalone ./standalone
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
 COPY --from=builder /app/public ./public
 
-# Expose the port Next.js runs on
-EXPOSE 3000
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
 
-# Command to run the Next.js application in standalone mode
-CMD ["node", "standalone/server.js"]
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+CMD ["node", "server.js"]
