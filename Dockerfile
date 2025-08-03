@@ -19,6 +19,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npm install -g npm@11.5.2
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
