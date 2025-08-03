@@ -14,7 +14,7 @@ RUN npm install # Or yarn install, pnpm install
 COPY . .
 
 # Build the Next.js application for production
-RUN npm run build # Or yarn build, pnpm build
+RUN npm run build
 
 # Stage 2: Create the production image
 FROM node:22-alpine AS runner
