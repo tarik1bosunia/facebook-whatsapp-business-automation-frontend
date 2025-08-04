@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write # Explicitly grant write permission for packages
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: fbafrontend
