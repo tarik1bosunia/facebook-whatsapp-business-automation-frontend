@@ -37,11 +37,11 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
-          mkdir -p /var/www/fbafrontend
-          mv /tmp/frontend.tar.gz /var/www/fbafrontend/
+          sudo mkdir -p /var/www/fbafrontend
+          sudo mv /tmp/frontend.tar.gz /var/www/fbafrontend/
           cd /var/www/fbafrontend
-          tar -xzf frontend.tar.gz
-          rm frontend.tar.gz
+          sudo tar -xzf frontend.tar.gz
+          sudo rm frontend.tar.gz
 
-          docker compose down || true
-          docker compose up --build -d
+          sudo docker compose down || true
+          sudo docker compose up --build -d
