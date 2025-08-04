@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }} # Use full repository name
+  IMAGE_NAME: fbafrontend
 
 jobs:
   build-and-deploy:
@@ -47,7 +47,6 @@ jobs:
         tags: |
           ghcr.io/${{ env.IMAGE_NAME }}:latest
           ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          ghcr.io/${{ github.repository }}:latest # Add this for easier pulling
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/amd64
@@ -63,10 +62,10 @@ jobs:
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
           docker pull ghcr.io/${{ env.IMAGE_NAME }}:latest || true
-          docker stop fba-frontend || true
-          docker rm fba-frontend || true
+          docker stop fbafrontend || true
+          docker rm fbafrontend || true
           docker run -d \
-            --name fba-frontend \
+            --name fbafrontend \
             --restart unless-stopped \
             -p 3000:3000 \
             -e NODE_ENV=production \

@@ -9,7 +9,7 @@ services:
       args:
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
         NEXT_PUBLIC_WS_BACKEND_URL: ${NEXT_PUBLIC_WS_BACKEND_URL}
-    container_name: fba-frontend
+    container_name: fbafrontend
     restart: unless-stopped # Use unless-stopped for both dev and prod
     env_file:
       - .env.local
