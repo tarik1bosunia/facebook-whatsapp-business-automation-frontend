@@ -1,0 +1,21 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: fbafrontend_dev
+    restart: "no" # No restart for dev, we want manual control
+    env_file:
+      - .env
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+      NEXT_PUBLIC_WS_BACKEND_URL: ${NEXT_PUBLIC_WS_BACKEND_URL}
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app # Bind mount for hot-reloading during development
+      - /app/node_modules # Exclude node_modules from bind mount to prevent issues
+    command: npm run dev
+    # No healthcheck for development

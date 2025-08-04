@@ -1,25 +1,19 @@
 
-version: '3.8'
 services:
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
       target: ${BUILD_TARGET:-runner} # Default to runner for production, can be overridden for dev
-      args:
-        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
-        NEXT_PUBLIC_WS_BACKEND_URL: ${NEXT_PUBLIC_WS_BACKEND_URL}
     container_name: fbafrontend
     restart: unless-stopped # Use unless-stopped for both dev and prod
     env_file:
-      - .env.local
+      - .env
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+      NEXT_PUBLIC_WS_BACKEND_URL: ${NEXT_PUBLIC_WS_BACKEND_URL}
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app # Bind mount for hot-reloading during development
-    command: ${COMMAND:-node server.js} # Default to production command, can be overridden for dev
-    environment:
-      NODE_ENV: ${NODE_ENV:-production} # Default to production, can be overridden for dev
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s

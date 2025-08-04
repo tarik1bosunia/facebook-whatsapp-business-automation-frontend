@@ -26,7 +26,8 @@ jobs:
           --exclude=".env" \
           --exclude="node_modules" \
           --exclude=".next" \
-          -e "ssh -i ~/.ssh/id_ed25519" ./ \
+          -e "ssh -i ~/.ssh/id_ed25519" \
+          --rsync-path="sudo rsync" ./ \
           ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/fbafrontend/
 
     - name: Deploy with Docker Compose on VPS
