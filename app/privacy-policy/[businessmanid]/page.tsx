@@ -29,7 +29,7 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-900">1. Introduction</h2>
               <p className="mt-4">
-                Welcome to {policyData.companyName} ("we," "our," "us"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website at <Link href={policyData.websiteUrl} className="text-indigo-600 hover:underline">{policyData.websiteUrl}</Link>, including any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the "Site").
+                Welcome to {policyData.companyName} (&quot;we,&quot; &quot;our,&quot; &quot;us&quot;). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website at <Link href={policyData.websiteUrl} className="text-indigo-600 hover:underline">{policyData.websiteUrl}</Link>, including any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the &quot;Site&quot;).
               </p>
               <p className="mt-4">
                 Please read this Privacy Policy carefully. If you do not agree with the terms of this privacy policy, please do not access the Site.
