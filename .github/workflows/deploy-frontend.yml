@@ -13,35 +13,34 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Compress codebase
+    - name: Set up SSH
       run: |
-        tar --warning=no-file-changed -czf frontend.tar.gz \
-          --exclude='./.git' \
-          --exclude='./node_modules' \
-          --exclude='./.next' \
-          --exclude='frontend.tar.gz' . || true
+        mkdir -p ~/.ssh
+        echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-    - name: Transfer compressed codebase to VPS
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        source: "frontend.tar.gz"
-        target: "/tmp/frontend.tar.gz"
+    - name: Rsync project files to VPS
+      run: |
+        rsync -avz --delete \
+          --exclude=".env" \
+          --exclude="node_modules" \
+          --exclude=".next" \
+          -e "ssh -i ~/.ssh/id_ed25519" ./ \
+          ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/fbafrontend/
 
-    - name: Deploy on VPS
-      uses: appleboy/ssh-action@v1
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        script: |
-          sudo mkdir -p /var/www/fbafrontend
-          sudo mv /tmp/frontend.tar.gz /var/www/fbafrontend/
+    - name: Deploy with Docker Compose on VPS
+      run: |
+        ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          set -e
           cd /var/www/fbafrontend
-          sudo tar -xzf frontend.tar.gz
-          sudo rm frontend.tar.gz
 
-          sudo docker compose down || true
+          echo "🧹 Stopping and removing containers..."
+          sudo docker compose down --remove-orphans || true
+
+          echo "🔧 Building and starting containers..."
           sudo docker compose up --build -d
+
+          echo "🧽 Cleaning up unused Docker images..."
+          sudo docker image prune -f || true
+        EOF
