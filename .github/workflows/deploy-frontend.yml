@@ -19,7 +19,7 @@ jobs:
           --exclude='./.git' \
           --exclude='./node_modules' \
           --exclude='./.next' \
-          --exclude='frontend.tar.gz' .
+          --exclude='frontend.tar.gz' . || true
 
     - name: Transfer compressed codebase to VPS
       uses: appleboy/scp-action@master
