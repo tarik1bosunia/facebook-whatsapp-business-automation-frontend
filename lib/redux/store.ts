@@ -1,8 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { conversationApi } from "./services/conversationApi";
 import { apiSlice } from './api/apiSlice';
 import chatReducer from './slices/chatSlice';
-import { authApi } from './api/authApi';
 import authReducer from './slices/authSlice';
 import { businessApi } from './services/businessApi';
 import { aimodelApi } from './features/ai/aiModelApi';
@@ -14,8 +12,7 @@ import {userApi as userSuperAdminApi} from "./features/superadmin/userApi"
 
 export const store = configureStore({
   reducer: {
-    [apiSlice.reducerPath]: conversationApi.reducer,
-    [authApi.reducerPath]: authApi.reducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
     [businessApi.reducerPath]: businessApi.reducer,
     [aimodelApi.reducerPath]: aimodelApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
@@ -30,7 +27,6 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       apiSlice.middleware,
-      authApi.middleware,
       businessApi.middleware,
       aimodelApi.middleware,
       productsApi.middleware,

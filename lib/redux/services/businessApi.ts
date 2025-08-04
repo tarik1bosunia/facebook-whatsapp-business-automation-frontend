@@ -39,12 +39,20 @@ export interface UpdateBusinessProfileInput {
   description?: string
 }
 
+export interface FacebookAuthRequest {
+  access_token: string;
+}
+
+export interface FacebookAuthResponse {
+  page_access_token: string;
+}
+
 // ---------- API Setup ----------
 
 export const businessApi = createApi({
   reducerPath: 'businessApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['BusinessProfile', 'BusinessHours'],
+  tagTypes: ['BusinessProfile', 'BusinessHours', 'FacebookIntegration'],
   endpoints: (builder) => ({
     // Business Profile (singleton)
     getBusinessProfile: builder.query<BusinessProfile, void>({
@@ -82,6 +90,16 @@ export const businessApi = createApi({
       }),
       invalidatesTags: ['BusinessHours'],
     }),
+
+    // Facebook Integration
+    facebookAuth: builder.mutation<FacebookAuthResponse, FacebookAuthRequest>({
+      query: (data) => ({
+        url: 'facebook-integration/facebook-auth/',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['FacebookIntegration'],
+    }),
   }),
 })
 
@@ -91,4 +109,5 @@ export const {
   useGetBusinessHoursQuery,
   useCreateBusinessHourMutation,
   useUpdateBusinessHourMutation,
+  useFacebookAuthMutation,
 } = businessApi

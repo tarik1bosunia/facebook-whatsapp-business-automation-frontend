@@ -15,7 +15,22 @@ This guide will walk you through the process of integrating your Facebook Page w
 
         ![pageid](./images/page_id_01.png)
 
-    * **Facebook Access Token:** [**Note:** Instructions on how to get this token will be added later.]
+    * **Facebook Access Token:** To obtain a Facebook Access Token, you typically need to create a Facebook Developer App and generate a User Access Token or Page Access Token with the necessary permissions. This process involves:
+        1. Going to the Facebook for Developers website:
+        [https://developers.facebook.com/apps/](./https://developers.facebook.com/apps/)
+        2. Creating a new App or selecting an existing one.
+        for creating new app -
+        cilck on the `Create App ` button
+        it will redirect you 
+        [https://developers.facebook.com/apps/creation/](https://developers.facebook.com/apps/creation/) link. it will look like bellow
+        [](./images/)
+
+        give `App name` and `App contact email` here 
+
+        3. Navigating to the "Graph API Explorer" or similar tool.
+        4. Selecting your app and the desired permissions (e.g., `pages_show_list`, `pages_read_engagement`, `pages_manage_metadata`, `pages_messaging`).
+        5. Generating the Access Token.
+        Please refer to Facebook's official developer documentation for the most up-to-date and detailed instructions on obtaining the correct access token for your specific use case.
 
     * **Facebook Verify Token:** Create a unique token. For security, it's best to use one that is more than 20 characters long.
 
@@ -33,8 +48,8 @@ After a successful connection, you must set up the webhook on Facebook's develop
 
     `https://developers.facebook.com/apps/{APP_ID}/webhooks/?business_id={BUSINESS_ID}`
 
-    * [**How to get your APP_ID**](./how_to_get_APP_ID.md): [placeholder]
-    * [**How to get your BUSINESS_ID**](./how_to_get_BUSINESS_ID.md): [placeholder]
+    * [**How to get your APP_ID**](./how_to_get_APP_ID.md): Your APP_ID is found in your Facebook Developer App dashboard. After logging in, select your app, and the APP_ID will be prominently displayed on the dashboard or in the "Settings" -> "Basic" section.
+    * [**How to get your BUSINESS_ID**](./how_to_get_BUSINESS_ID.md): Your BUSINESS_ID is associated with your Facebook Business Manager account. You can find it in your Business Manager settings under "Business Info" or "Business Settings."
 
     ![web_hook_facebook_01](./images/webhook_facebook_01.png)
 
@@ -63,11 +78,9 @@ After a successful connection, you must set up the webhook on Facebook's develop
         ![web_hook_facebook_06](./images/webhook_facebook_06.png)
 
     * Scroll down and set the four required permissions from **`unsubscribed`** to **`subscribed`**.
-
-        ![web_hook_facebook_07](./images/webhook_facebook_07.png)
-
     * Your final permissions should look like this:
 
+        ![web_hook_facebook_07](./images/webhook_facebook_07.png)
         ![web_hook_facebook_08](./images/webhook_facebook_08.png)
 
 Congratulations! Your Facebook Webhook is now set up and ready.

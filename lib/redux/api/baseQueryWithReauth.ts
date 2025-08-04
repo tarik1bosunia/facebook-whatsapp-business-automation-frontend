@@ -3,6 +3,7 @@ import { Mutex } from "async-mutex";
 import { baseQuery } from "./baseQuery";
 import { RootState } from "@/lib/redux/store";
 import { logout, setCredentials } from "./../slices/authSlice";
+import { apiSlice } from "./apiSlice";
 
 //  Create a new mutex to ensure only one refresh attempt at a time
 const mutex = new Mutex();
@@ -50,9 +51,11 @@ export const baseQueryWithReauth: BaseQueryFn<
             result = await baseQuery(args, api, extraOptions);
           } else {
             api.dispatch(logout());
+            api.dispatch(apiSlice.util.resetApiState());
           }
         } else {
           api.dispatch(logout());
+          api.dispatch(apiSlice.util.resetApiState());
         }
       } finally {
         // release must be called once the mutex should be released again.

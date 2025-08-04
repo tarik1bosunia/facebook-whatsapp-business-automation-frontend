@@ -1,5 +1,11 @@
 FROM node:22-alpine AS base
 
+ARG NEXT_PUBLIC_API_BASE_URL
+ARG NEXT_PUBLIC_WS_BACKEND_URL
+
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_WS_BACKEND_URL=$NEXT_PUBLIC_WS_BACKEND_URL
+
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
@@ -19,9 +25,6 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm install -g npm@11.5.2
-
-RUN npm install -g npm@11.5.2 # optional: upgrade npm
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \

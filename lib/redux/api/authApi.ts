@@ -1,7 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-import { baseQueryWithReauth } from './baseQueryWithReauth';
-import { 
-  RegistrationRequest, 
+import { apiSlice } from './apiSlice';
+import {
+  RegistrationRequest,
   TokenResponse,
   UserProfile,
   PasswordResetRequest,
@@ -9,10 +8,7 @@ import {
   PasswordChangeRequest,
 } from '@/types/auth';
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
-  baseQuery: baseQueryWithReauth,
-  tagTypes: ['Auth'],
+const injectedRtkApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // login: builder.mutation<LoginResponse, LoginRequest>({
     //   query: (credentials) => ({
@@ -47,7 +43,7 @@ export const authApi = createApi({
     
     register: builder.mutation<void, RegistrationRequest>({
       query: (userData) => ({
-        url: '/registration/',
+        url: 'account/registration/',
         method: 'POST',
         body: userData
       }),
@@ -55,7 +51,7 @@ export const authApi = createApi({
     
     verifyEmail: builder.mutation<void, { uid: string; token: string }>({
       query: ({ uid, token }) => ({
-        url: `/activate/${uid}/${token}/`,
+        url: `account/activate/${uid}/${token}/`,
         method: 'POST'
       }),
     }),
@@ -69,21 +65,21 @@ export const authApi = createApi({
     
     verifyUser: builder.mutation<void, void>({
       query: () => ({
-        url: '/auth/verify/',
+        url: 'account/auth/verify/',
         method: 'POST'
       }),
     }),
     
     deleteAccount: builder.mutation<void, void>({
       query: () => ({
-        url: '/auth/delete-account/',
+        url: 'account/auth/delete-account/',
         method: 'POST'
       }),
     }),
     
     changeEmail: builder.mutation<void, EmailChangeRequest>({
       query: (data) => ({
-        url: '/auth/change-email/',
+        url: 'account/auth/change-email/',
         method: 'POST',
         body: data
       }),
@@ -91,27 +87,27 @@ export const authApi = createApi({
     
     verifyEmailChange: builder.mutation<void, { token: string }>({
       query: ({ token }) => ({
-        url: `/verify-email-change/${token}/`,
+        url: `account/verify-email-change/${token}/`,
         method: 'POST'
       }),
     }),
     
     changePassword: builder.mutation<void, PasswordChangeRequest>({
       query: (data) => ({
-        url: '/auth/change-password/',
+        url: 'account/auth/change-password/',
         method: 'POST',
         body: data
       }),
     }),
     
     getProfile: builder.query<UserProfile, void>({
-      query: () => '/auth/profile/',
+      query: () => 'account/auth/profile/',
       providesTags: ['Auth'],
     }),
     
     updateProfile: builder.mutation<UserProfile, Partial<UserProfile>>({
       query: (profile) => ({
-        url: '/auth/profile/',
+        url: 'account/auth/profile/',
         method: 'PATCH',
         body: profile
       }),
@@ -120,14 +116,14 @@ export const authApi = createApi({
     
     checkEmail: builder.query<{ exists: boolean }, string>({
       query: (email) => ({
-        url: '/check-email/',
+        url: 'account/check-email/',
         params: { email }
       }),
     }),
     
     sendPasswordResetEmail: builder.mutation<void, { email: string }>({
       query: (data) => ({
-        url: '/send-password-reset-email/',
+        url: 'account/send-password-reset-email/',
         method: 'POST',
         body: data
       }),
@@ -135,7 +131,7 @@ export const authApi = createApi({
     
     passwordResetConfirm: builder.mutation<void, PasswordResetRequest & { uid: string; token: string }>({
       query: ({ uid, token, ...data }) => ({
-        url: `/password-reset-confirm/${uid}/${token}/`,
+        url: `account/password-reset-confirm/${uid}/${token}/`,
         method: 'POST',
         body: data
       }),
@@ -143,16 +139,8 @@ export const authApi = createApi({
     
     getToken: builder.mutation<TokenResponse, void>({
       query: () => ({
-        url: '/token/',
+        url: 'account/token/',
         method: 'POST'
-      }),
-    }),
-    
-    refreshToken: builder.mutation<{ access: string }, void>({
-      query: () => ({
-        url: '/token/refresh/',
-        method: 'POST',
-        body: { refresh: '' } // Will be filled by baseQuery
       }),
     }),
   }),
@@ -174,5 +162,4 @@ export const {
   useSendPasswordResetEmailMutation,
   usePasswordResetConfirmMutation,
   useGetTokenMutation,
-  useRefreshTokenMutation,
-} = authApi;
+} = injectedRtkApi;

@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { resetAllApiState } from "../utils/resetAllApiState";
-import { AppDispatch } from "../store";
 
 interface FieldErrors {
   email?: string[];
@@ -144,7 +142,3 @@ export const selectAuthLoading = (state: { auth: AuthState }) =>
 export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
 
 
-export const logoutAndReset = () => (dispatch: AppDispatch) => {
-  dispatch(logout());
-  dispatch(resetAllApiState());
-};

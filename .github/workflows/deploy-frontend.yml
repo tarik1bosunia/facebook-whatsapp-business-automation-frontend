@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.actor }}/fba-frontend  # Simplified name
+  IMAGE_NAME: ${{ github.repository }} # Use full repository name
 
 jobs:
   build-and-deploy:
@@ -47,6 +47,7 @@ jobs:
         tags: |
           ghcr.io/${{ env.IMAGE_NAME }}:latest
           ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          ghcr.io/${{ github.repository }}:latest # Add this for easier pulling
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/amd64
@@ -71,4 +72,6 @@ jobs:
             -e NODE_ENV=production \
             -e NEXT_TELEMETRY_DISABLED=1 \
             -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+            -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }} \
+            -e NEXT_PUBLIC_WS_BACKEND_URL=${{ secrets.NEXT_PUBLIC_WS_BACKEND_URL }} \
             ghcr.io/${{ env.IMAGE_NAME }}:latest
