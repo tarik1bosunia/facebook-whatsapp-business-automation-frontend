@@ -1,7 +1,7 @@
 'use client'
 
-import { socketManager } from "@/lib/websocket/websocketManager1";
-import { setConnectionStatus } from "@/lib/redux/slices/chatSlice";
+import { socketManager } from "@/lib/websocket/websocketManager";
+import { setConnectionStatus } from "@/lib/redux/features/chatSlice";
 import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks/reduxHooks";
@@ -46,7 +46,7 @@ export default function ConnectionStatusBar() {
     
     try {
       dispatch(setConnectionStatus("connecting"));
-      await socketManager.reconnect();
+      await socketManager.connect();
     } catch (error) {
       console.error("Reconnection failed:", error);
       setLastError("Failed to reconnect. Please try again.");

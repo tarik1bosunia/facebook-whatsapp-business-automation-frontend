@@ -1,7 +1,7 @@
 'use client'
 
 import AppLayout from "@/features/layouts/AppLayout";
-import ConnectionStatusBar from "@/components/websocket/ConnectionStatusBar";
+import ConnectionStatusBar from "@/features/conversations/components/ConnectionStatusBar";
 import { useAppSelector } from "@/lib/redux/hooks/reduxHooks";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

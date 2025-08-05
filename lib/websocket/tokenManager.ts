@@ -5,7 +5,7 @@ import {
   selectAccessToken,
   selectRefreshToken,
   setCredentials,
-} from "@/lib/redux/slices/authSlice";
+} from "../redux/features/authSlice";
 import { isTokenExpired } from "../utils/jwt";
 
 class TokenManager {

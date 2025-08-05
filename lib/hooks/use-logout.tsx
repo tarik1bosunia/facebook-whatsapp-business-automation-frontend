@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../redux/hooks/reduxHooks";
-import { logout } from "../redux/slices/authSlice";
+import { logout } from "../redux/features/authSlice";
 import { useRouter } from "next/navigation";
 import { useLogoutMutation } from "../redux/features/auth/authApi";
 

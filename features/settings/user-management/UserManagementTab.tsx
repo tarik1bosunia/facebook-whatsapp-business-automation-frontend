@@ -5,12 +5,12 @@ import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useUsers,  } from "./user-management/useUsers";
-import { UserForm } from "./user-management/UserForm";
-import { UserStats } from "./user-management/UserStats";
-import { UserTable } from "./user-management/UserTable";
-import { EmptyState } from "./user-management/EmptyState";
 import { User } from "@/lib/redux/features/superadmin/userApi";
+import { useUsers } from "./useUsers";
+import { UserForm } from "./UserForm";
+import { UserStats } from "./UserStats";
+import { UserTable } from "./UserTable";
+import { EmptyState } from "./EmptyState";
 
 
 export const UserManagementTab = () => {

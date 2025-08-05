@@ -1,6 +1,6 @@
 // messageQueue.ts
 import { store } from "@/lib/redux/store";
-import { addNotification } from "@/lib/redux/slices/chatSlice";
+import { addNotification } from "../redux/features/chatSlice";
 
 interface PendingMessage {
   data: object;

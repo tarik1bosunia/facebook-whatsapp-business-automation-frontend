@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Bell, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +12,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks/reduxHooks";
-import { markNotificationRead } from "@/lib/redux/slices/chatSlice";
+import { markNotificationRead } from "@/lib/redux/features/chatSlice";
 
 import { RoleLabels } from '@/types/role'
 import { UserProfile } from "@/types/user";
 
 import useLogout from '@/lib/hooks/use-logout'
-import { cn } from "@/lib/utils/twMerge";
 
 interface HeaderProps {
   user: UserProfile
@@ -35,11 +33,6 @@ const Header = ({ user, businessName = "ConvoBiz Pilot" }: HeaderProps) => {
   const notifications = useAppSelector(state => state.chat.notifications);
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const handleNotificationClick = (id: string) => {
-    dispatch(markNotificationRead(id));
-    // setIsOpen(false);
-    // Add navigation logic here
-  };
 
   const markAllAsRead = () => {
     notifications.forEach(notification => {

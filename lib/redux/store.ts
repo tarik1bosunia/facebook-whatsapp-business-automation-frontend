@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { apiSlice } from './api/apiSlice';
-import chatReducer from './slices/chatSlice';
-import authReducer from './slices/authSlice';
+import chatReducer from './features/chatSlice';
+import authReducer from './features/authSlice';
 import { businessApi } from './services/businessApi';
 import { aimodelApi } from './features/ai/aiModelApi';
 import { productsApi } from './features/productsApi';

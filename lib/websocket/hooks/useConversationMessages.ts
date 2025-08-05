@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks/reduxHooks";
 import { 
   setActiveConversation, 
   clearConversationNotifications 
-} from "@/lib/redux/slices/chatSlice";
+} from "../../redux/features/chatSlice";
 
 export default function useConversationMessages(conversationId?: string) {
   const dispatch = useAppDispatch();

@@ -1,1 +1,1 @@
-export {default as  UserManagementTab} from './UserManagemetTab'
+export {default as UserManagementTab} from './user-management/UserManagementTab'

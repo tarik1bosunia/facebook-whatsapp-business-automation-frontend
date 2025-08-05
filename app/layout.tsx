@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Providers as ReduxProvider } from "@/lib/redux/provider";
-import Setup from "@/features/utils/Setup";
+import { Providers as ReduxProvider } from "../lib/redux/provider";
+// import Setup from "@/features/utils/Setup";
 
 
 const geistSans = Geist({
@@ -37,7 +37,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReduxProvider>
-            <Setup />
+            {/* <Setup /> */}
             {children}
         </ReduxProvider>
 

@@ -1,9 +1,9 @@
 import { WebSocketEvent } from "@/types/websocket";
-import { addMessage, setConnectionStatus } from "../redux/slices/chatSlice";
+import { addMessage, setConnectionStatus } from "../redux/features/chatSlice";
 import { store } from "../redux/store";
 import { tokenManager } from "./tokenManager";
 import { Message } from "@/types/conversation";
-import { WS_BACKEND_URL } from "@/constants";
+import { WS_BACKEND_URL } from "@/lib/utils/constants";
 
 class WebSocketManager {
   public static instance: WebSocketManager;

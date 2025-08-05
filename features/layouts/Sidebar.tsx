@@ -18,10 +18,10 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { useIsMobile } from '@/hooks/use-mobile'
+import { useIsMobile } from '@/lib/hooks/use-mobile'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import useLogout from '@/lib/hooks/use-logout'
-import { Role, RoleLabels } from '@/types/role'
+import {RoleLabels } from '@/types/role'
 import { UserProfile } from '@/types/user'
 
 interface SidbarProps{

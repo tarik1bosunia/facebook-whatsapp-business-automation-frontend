@@ -10,10 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { AIConfigTab } from "@/features/settings/AIConfigTab";
-import BusinessTab from "@/features/settings/BusinessTab";
-import FacebookIntegrationCard from "@/features/settings/FacebookIntegrationCard";
-import WhatsAppIntegrationCard from "@/features/settings/WhatsAppIntegrationCard";
+import { AIConfigTab } from "@/features/settings/components/AIConfigTab";
+import BusinessTab from "@/features/settings/components/BusinessTab";
+import FacebookIntegrationCard from "@/features/settings/components/FacebookIntegrationCard";
+import WhatsAppIntegrationCard from "@/features/settings/components/WhatsAppIntegrationCard";
 import { UserManagementTab } from "@/features/settings";
 import Link from "next/link";
 

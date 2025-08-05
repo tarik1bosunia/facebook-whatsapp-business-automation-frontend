@@ -2,7 +2,7 @@ import { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/qu
 import { Mutex } from "async-mutex";
 import { baseQuery } from "./baseQuery";
 import { RootState } from "@/lib/redux/store";
-import { logout, setCredentials } from "./../slices/authSlice";
+import { logout, setCredentials } from "./../features/authSlice";
 import { apiSlice } from "./apiSlice";
 
 //  Create a new mutex to ensure only one refresh attempt at a time
@@ -30,7 +30,7 @@ export const baseQueryWithReauth: BaseQueryFn<
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
       try {
-        const refreshToken = (api.getState() as RootState).auth.refreshToken;
+        const refreshToken = (api.getState() as RootState).auth.refreshToken as string;
         if (refreshToken) {
           const refreshResult = await baseQuery(
             {

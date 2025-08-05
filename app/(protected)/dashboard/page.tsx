@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DashboardStats from "@/features/dashboard/DashboardStats";
-import RecentActivity from "@/features/dashboard/RecentActivity";
+import DashboardStats from "@/features/dashboard/components/DashboardStats";
+import RecentActivity from "@/features/dashboard/components/RecentActivity";
 import { BarChart3, RefreshCcw, ArrowUpRight, ArrowRight, User } from "lucide-react";
 import Link from "next/link";
 

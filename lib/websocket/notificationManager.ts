@@ -1,7 +1,7 @@
 // notificationManager.ts
 import { store } from "@/lib/redux/store";
 import { AppNotification } from "@/types/chat";
-import { markNotificationRead,} from "@/lib/redux/slices/chatSlice";
+import { markNotificationRead,} from "../redux/features/chatSlice";
 import { Message } from "@/types/conversation";
 
 export class NotificationManager {

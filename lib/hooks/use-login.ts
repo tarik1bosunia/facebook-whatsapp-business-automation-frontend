@@ -3,11 +3,11 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-import { setCredentials } from "@/lib/redux/slices/authSlice";
-import { useAppDispatch } from "@/lib/redux/hooks/reduxHooks";
+import { setCredentials } from "@/lib/redux/features/authSlice";
+import { useAppDispatch } from "../redux/hooks/reduxHooks";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 
-import { socketManager } from "@/lib/websocket/websocketManager1";
+import { socketManager } from "@/lib/websocket/websocketManager";
 import { isErrorResponse, FieldErrorMap } from "@/types/apiResponse";
 import { LoginResponse } from "@/types/auth";
 
