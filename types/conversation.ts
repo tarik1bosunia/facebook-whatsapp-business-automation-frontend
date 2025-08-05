@@ -15,22 +15,21 @@ export interface Conversation {
   unreadCount: number;
 }
 
-export interface Contact {
-  name: string;
-  phones: string[];
+export interface ContactPhone {
+  phone: string;
+  type?: string;
 }
 
-// export interface Contact {
-//   name?: string;
-//   phones?: Array<{
-//     phone: string;
-//     type?: string;
-//   }>;
-//   emails?: Array<{
-//     email: string;
-//     type?: string;
-//   }>;
-// }
+export interface ContactEmail {
+  email: string;
+  type?: string;
+}
+
+export interface Contact {
+  name?: string;
+  phones?: ContactPhone[];
+  emails?: ContactEmail[];
+}
 
 
 export interface Message {

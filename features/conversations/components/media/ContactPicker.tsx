@@ -3,12 +3,27 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Plus, X, Phone, Mail, User } from "lucide-react";
+import { Plus, X, Phone} from "lucide-react";
+
+interface Phone {
+  phone: string;
+  type: "mobile" | "work" | "home";
+}
+
+interface Email {
+  email: string;
+  type: "personal" | "work";
+}
+
+interface Contact {
+  name: string;
+  phones: Phone[];
+  emails: Email[];
+}
 
 interface ContactPickerProps {
-  onContactSelect: (contact: any) => void;
+  onContactSelect: (contact: Contact) => void;
 }
 
 const ContactPicker = ({ onContactSelect }: ContactPickerProps) => {
@@ -17,7 +32,7 @@ const ContactPicker = ({ onContactSelect }: ContactPickerProps) => {
   const [emails, setEmails] = useState([{ email: "", type: "personal" }]);
 
   // Mock contacts for demonstration
-  const [savedContacts] = useState([
+  const [savedContacts] = useState<Contact[]>([
     {
       name: "John Doe",
       phones: [{ phone: "+1234567890", type: "mobile" }],
@@ -38,10 +53,16 @@ const ContactPicker = ({ onContactSelect }: ContactPickerProps) => {
     setPhones(phones.filter((_, i) => i !== index));
   };
 
-  const updatePhone = (index: number, field: string, value: string) => {
-    const updated = phones.map((phone, i) => 
-      i === index ? { ...phone, [field]: value } : phone
-    );
+  const updatePhone = (index: number, field: keyof Phone, value: string) => {
+    const updated = phones.map((phone, i) => {
+      if (i === index) {
+        if (field === "type") {
+          return { ...phone, type: value as Phone['type'] };
+        }
+        return { ...phone, [field]: value };
+      }
+      return phone;
+    });
     setPhones(updated);
   };
 
@@ -53,26 +74,32 @@ const ContactPicker = ({ onContactSelect }: ContactPickerProps) => {
     setEmails(emails.filter((_, i) => i !== index));
   };
 
-  const updateEmail = (index: number, field: string, value: string) => {
-    const updated = emails.map((email, i) => 
-      i === index ? { ...email, [field]: value } : email
-    );
+  const updateEmail = (index: number, field: keyof Email, value: string) => {
+    const updated = emails.map((email, i) => {
+      if (i === index) {
+        if (field === "type") {
+          return { ...email, type: value as Email['type'] };
+        }
+        return { ...email, [field]: value };
+      }
+      return email;
+    });
     setEmails(updated);
   };
 
   const handleCreateContact = () => {
     if (!contactName.trim()) return;
 
-    const contact = {
+    const contact: Contact = {
       name: contactName,
-      phones: phones.filter(p => p.phone.trim()),
-      emails: emails.filter(e => e.email.trim())
+      phones: phones.filter(p => p.phone.trim()) as Phone[],
+      emails: emails.filter(e => e.email.trim()) as Email[]
     };
 
     onContactSelect(contact);
   };
 
-  const handleSelectSavedContact = (contact: any) => {
+  const handleSelectSavedContact = (contact: Contact) => {
     onContactSelect(contact);
   };
 
@@ -131,7 +158,7 @@ const ContactPicker = ({ onContactSelect }: ContactPickerProps) => {
               />
               <select
                 value={phone.type}
-                onChange={(e) => updatePhone(index, "type", e.target.value)}
+                onChange={(e) => updatePhone(index, "type", e.target.value as Phone['type'])}
                 className="px-2 py-1 border rounded text-sm"
               >
                 <option value="mobile">Mobile</option>

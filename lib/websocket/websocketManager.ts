@@ -160,6 +160,14 @@ class WebSocketManager {
       }
       store.dispatch(setConnectionStatus("disconnected"));
     }
+
+    public send(message: object): void {
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(JSON.stringify(message));
+      } else {
+        console.warn("WebSocket is not open. Message not sent:", message);
+      }
+    }
 }
 
 export const socketManager = WebSocketManager.getInstance();

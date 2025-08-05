@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, } from "react";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,9 +15,7 @@ import {
 import {
   User,
   Send,
-  Plus,
   MoreVertical,
-  MessagesSquare,
   PackageOpen,
   MessageSquare,
   Facebook,
@@ -31,11 +30,26 @@ import {
 import { toast } from "sonner";
 import { formatDjangoDateTime } from "@/lib/utils";
 import ToggleAutoReplyButton from "./ToggleAutoReplyButton";
-import { Conversation } from "@/types/conversation";
+import { Conversation, Contact } from "@/types/conversation";
 import useConversationMessages from "@/features/conversations/hooks/useConversationMessages";
-import ContactsMessage from "./ContactsMessage";
 import MediaAttachmentMenu from "./MediaAttachmentMenu";
-import { API_BASE_URL } from "@/constants";
+import { API_BASE_URL } from "@/lib/utils/constants";
+
+interface AudioData {
+  duration: number;
+  type: string;
+}
+
+interface FileData {
+  name: string;
+  size: number;
+  type: string;
+}
+
+interface ImageData {
+  blob: Blob;
+  url: string;
+}
 
 interface ConversationViewProps {
   conversation?: Conversation;
@@ -77,7 +91,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
     }
   };
 
-  const handleAttachmentSelect = (type: string, data?: any) => {
+  const handleAttachmentSelect = (type: string, data?: Contact | AudioData | FileData | ImageData) => {
     console.log("Selected attachment type:", type, data);
     
     if (data) {
@@ -88,9 +102,11 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
       if (type === "contact") {
         console.log("Contact data:", data);
       } else if (type === "audio") {
-        console.log("Audio data:", { duration: data.duration, type: data.type });
+        console.log("Audio data:", { duration: (data as AudioData).duration, type: (data as AudioData).type });
+      } else if (type === "camera") {
+        console.log("Image data:", { url: (data as ImageData).url });
       } else if (type === "camera" || type === "photo" || type === "video" || type === "document") {
-        console.log("File data:", { name: data.name, size: data.size, type: data.type });
+        console.log("File data:", { name: (data as FileData).name, size: (data as FileData).size, type: (data as FileData).type });
       }
     } else {
       toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} attachment selected`);
@@ -150,11 +166,13 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
       case "image":
         return (
           <div className="relative max-w-xs">
-            <img
+            <Image
               src={mediaURL}
               alt="Shared image"
               className="rounded-lg shadow-sm max-w-full h-auto cursor-pointer hover:opacity-95 transition-opacity"
               onClick={() => window.open(mediaURL, '_blank')}
+              width={500}
+              height={300}
             />
           </div>
         );
@@ -226,7 +244,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
     }
   }
 
-  function ContactCard({ contact }: { contact: any }) {
+  function ContactCard({ contact }: { contact: Contact }) {
     return (
       <div className="bg-white border border-gray-200 rounded-lg p-4 max-w-xs shadow-sm hover:shadow-md transition-shadow">
         <div className="flex items-center space-x-3 mb-3">
@@ -241,9 +259,9 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
           </div>
         </div>
         
-        {contact.phones?.length > 0 && (
+        {contact.phones && contact.phones.length > 0 && (
           <div className="space-y-1 mb-2">
-            {contact.phones.map((phone: any, index: number) => (
+            {contact.phones?.map((phone: { phone: string; type?: string }, index: number) => (
               <div key={index} className="flex items-center space-x-2 text-sm">
                 <Phone className="w-3 h-3 text-gray-400" />
                 <span className="text-gray-600">{phone.phone}</span>
@@ -255,9 +273,9 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
           </div>
         )}
         
-        {contact.emails?.length > 0 && (
+        {contact.emails && contact.emails.length > 0 && (
           <div className="space-y-1">
-            {contact.emails.map((email: any, index: number) => (
+            {contact.emails?.map((email: { email: string; type?: string }, index: number) => (
               <div key={index} className="flex items-center space-x-2 text-sm">
                 <Mail className="w-3 h-3 text-gray-400" />
                 <span className="text-gray-600">{email.email}</span>
@@ -385,7 +403,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
                   
                   {message.contacts && message.contacts.length > 0 && (
                     <div className="space-y-2">
-                      {message.contacts.map((contact, index) => (
+                      {message.contacts?.map((contact: Contact, index: number) => (
                         <ContactCard key={index} contact={contact} />
                       ))}
                     </div>

@@ -20,16 +20,49 @@ import {
   User,
   Mic,
   Camera,
-  Upload,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import ContactPicker from "./ContactPicker";
 import AudioRecorder from "./AudioRecorder";
 import CameraCapture from "./CameraCapture";
 
+interface FileData {
+  file: File;
+  name: string;
+  size: number;
+  type: string;
+  url: string;
+}
+
+interface Phone {
+  phone: string;
+  type: "mobile" | "work" | "home";
+}
+
+interface Email {
+  email: string;
+  type: "personal" | "work";
+}
+
+interface Contact {
+  name: string;
+  phones: Phone[];
+  emails: Email[];
+}
+
+interface AudioData {
+  blob: Blob;
+  url: string;
+  duration: number;
+}
+
+interface ImageData {
+  blob: Blob;
+  url: string;
+}
+
 interface MediaAttachmentMenuProps {
-  onAttachmentSelect: (type: string, data?: any) => void;
+  onAttachmentSelect: (type: string, data?: FileData | Contact | AudioData | ImageData) => void;
 }
 
 const MediaAttachmentMenu = ({ onAttachmentSelect }: MediaAttachmentMenuProps) => {
@@ -98,19 +131,19 @@ const MediaAttachmentMenu = ({ onAttachmentSelect }: MediaAttachmentMenuProps) =
     event.target.value = '';
   };
 
-  const handleContactSelect = (contact: any) => {
+  const handleContactSelect = (contact: Contact) => {
     onAttachmentSelect("contact", contact);
     setShowContactPicker(false);
     toast.success("Contact selected");
   };
 
-  const handleAudioRecord = (audioData: any) => {
+  const handleAudioRecord = (audioData: AudioData) => {
     onAttachmentSelect("audio", audioData);
     setShowAudioRecorder(false);
     toast.success("Audio recorded");
   };
 
-  const handleCameraCapture = (imageData: any) => {
+  const handleCameraCapture = (imageData: ImageData) => {
     onAttachmentSelect("camera", imageData);
     setShowCameraCapture(false);
     toast.success("Photo captured");

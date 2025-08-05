@@ -1,11 +1,12 @@
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Camera, RotateCcw, Check, X, Video, Square } from "lucide-react";
+import { Camera, RotateCcw, Check, Video, Square } from "lucide-react";
 import { toast } from "sonner";
 
 interface CameraCaptureProps {
-  onCapture: (imageData: any) => void;
+  onCapture: (imageData: { blob: Blob; url: string; type: string; name: string }) => void;
 }
 
 const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
@@ -23,23 +24,10 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
   const recordedChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    startCamera();
-    
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, []);
-
-  const startCamera = async () => {
+  const startCamera = useCallback(async () => {
     setIsLoading(true);
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user' },
         audio: mode === 'video'
       });
@@ -54,7 +42,21 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [mode, setStream]);
+
+  useEffect(() => {
+    startCamera();
+    
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [startCamera, stream]);
+
 
   const capturePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
@@ -265,10 +267,12 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
         ) : (
           <div className="relative">
             {capturedImage ? (
-              <img
+              <Image
                 src={capturedImage}
                 alt="Captured"
-                className="w-full h-64 object-cover rounded-lg"
+                fill
+                style={{ objectFit: "cover" }}
+                className="rounded-lg"
               />
             ) : (
               <video

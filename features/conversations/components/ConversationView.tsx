@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,9 +27,9 @@ import { toast } from "sonner";
 import { formatDjangoDateTime } from "@/lib/utils";
 import ToggleAutoReplyButton from "./ToggleAutoReply";
 import { Conversation } from "@/types/conversation";
-import useConversationMessages from "./hooks/useConversationMessages";
 import ContactsMessage from "./ContactsMessage";
-import { API_BASE_URL } from "@/constants";
+import useConversationMessages from "../hooks/useConversationMessages";
+import { API_BASE_URL } from "@/lib/utils/constants";
 
 
 interface ConversationViewProps {
@@ -97,11 +98,15 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
     switch (mediaType) {
       case "image":
         return (
-          <img
-            src={mediaURL}
-            alt="Image"
-            className="rounded-lg max-h-64 object-contain"
-          />
+          <div className="relative w-full h-64">
+            <Image
+              src={mediaURL}
+              alt="Image"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="rounded-lg object-contain"
+            />
+          </div>
         );
 
       case "video":

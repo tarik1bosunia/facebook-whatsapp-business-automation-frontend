@@ -2,10 +2,7 @@
 
 import React, { useState } from 'react';
 
-interface Contact {
-  name: string;
-  phones: string[];
-}
+import { Contact } from "@/types/conversation";
 
 interface ContactsMessageProps {
   contactsData: Contact[];
@@ -32,10 +29,16 @@ const ContactsMessage: React.FC<ContactsMessageProps> = ({ contactsData }) => {
             <div key={idx} className="bg-white p-2 rounded border border-gray-300">
               <div className="text-gray-800 font-medium">{contact.name}</div>
               <ul className="mt-1 text-sm text-gray-600">
-                {contact.phones.map((phone, pidx) => (
+                {contact.phones && contact.phones.map((phone, pidx) => (
                   <li key={pidx} className="flex items-center gap-1">
                     <span>📞</span>
-                    <span>{phone}</span>
+                    <span>{phone.phone}</span>
+                  </li>
+                ))}
+                {contact.emails && contact.emails.map((email, eidx) => (
+                  <li key={eidx} className="flex items-center gap-1">
+                    <span>📧</span>
+                    <span>{email.email}</span>
                   </li>
                 ))}
               </ul>

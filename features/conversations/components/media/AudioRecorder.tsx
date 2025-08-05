@@ -5,7 +5,14 @@ import { Mic, Square, Play, Pause, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface AudioRecorderProps {
-  onAudioRecord: (audioData: any) => void;
+  onAudioRecord: (audioData: AudioData) => void;
+}
+
+interface AudioData {
+  blob: Blob;
+  url: string;
+  duration: number;
+  type: string;
 }
 
 const AudioRecorder = ({ onAudioRecord }: AudioRecorderProps) => {

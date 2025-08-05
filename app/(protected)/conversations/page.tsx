@@ -2,8 +2,8 @@
 
 
 import { useState } from "react";
-import ConversationList from "@/features/conversations/ConversationList";
-import ConversationView from "@/features/conversations/ConversationView";
+import ConversationList from "@/features/conversations/components/ConversationList";
+import ConversationView from "@/features/conversations/components/ConversationView";
 import { useGetConversationsQuery } from "@/lib/redux/services/conversationApi";
 import { Conversation } from "@/types/conversation";
 

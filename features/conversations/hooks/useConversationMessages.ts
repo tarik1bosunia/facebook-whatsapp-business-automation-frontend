@@ -3,9 +3,9 @@ import {
 } from "@/lib/redux/services/conversationApi";
 import { Message } from "@/types/conversation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { socketManager } from "@/lib/websocket/websocketManager1";
 import { addMessage, addMessages, selectAllMessages } from "../../../lib/redux/features/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks/reduxHooks";
+import { socketManager } from "@/lib/websocket/websocketManager";
 
 export default function useConversationMessages(conversationId?: string) {
   const {
