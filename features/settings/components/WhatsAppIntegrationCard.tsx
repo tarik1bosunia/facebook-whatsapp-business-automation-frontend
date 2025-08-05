@@ -27,7 +27,6 @@ export default function WhatsAppIntegrationCard() {
     isFetching,
     isUpdating,
     isConnected,
-    isDirty,
     platformId,
   } = useWhatsAppIntegrationForm();
 
@@ -69,9 +68,9 @@ export default function WhatsAppIntegrationCard() {
         <CardContent className="space-y-4">
           <div className="space-y-4">
             <div>
-              <Label htmlFor="platform_id">Phone Number ID</Label>
+              <Label htmlFor="whatsapp-platform_id">Phone Number ID</Label>
               <Input
-                id="platform_id"
+                id="whatsapp-platform_id"
                 value={formData.platform_id}
                 onChange={handleChange("platform_id")}
                 disabled={isUpdating}
@@ -84,9 +83,9 @@ export default function WhatsAppIntegrationCard() {
             </div>
 
             <div>
-              <Label htmlFor="access_token">Access Token</Label>
+              <Label htmlFor="whatsapp-access_token">Access Token</Label>
               <Input
-                id="access_token"
+                id="whatsapp-access_token"
                 type="password"
                 value={formData.access_token}
                 onChange={handleChange("access_token")}
@@ -101,9 +100,9 @@ export default function WhatsAppIntegrationCard() {
             </div>
 
             <div>
-              <Label htmlFor="verify_token">Verify Token</Label>
+              <Label htmlFor="whatsapp-verify_token">Verify Token</Label>
               <Input
-                id="verify_token"
+                id="whatsapp-verify_token"
                 type="password"
                 value={formData.verify_token}
                 onChange={handleChange("verify_token")}
@@ -151,13 +150,13 @@ export default function WhatsAppIntegrationCard() {
                 <h4 className="font-medium">Permissions</h4>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="auto-reply">Auto Replies</Label>
+                    <Label htmlFor="whatsapp-auto-reply">Auto Replies</Label>
                     <p className="text-sm text-muted-foreground">
                       Automatically respond to messages
                     </p>
                   </div>
                   <Switch
-                    id="auto-reply"
+                    id="whatsapp-auto-reply"
                     checked={formData.is_send_auto_reply}
                     onCheckedChange={handleCheckboxChange("is_send_auto_reply")}
                     disabled={isUpdating}
@@ -165,13 +164,13 @@ export default function WhatsAppIntegrationCard() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="notifications">Notifications</Label>
+                    <Label htmlFor="whatsapp-notifications">Notifications</Label>
                     <p className="text-sm text-muted-foreground">
                       Receive message alerts
                     </p>
                   </div>
                   <Switch
-                    id="notifications"
+                    id="whatsapp-notifications"
                     checked={formData.is_send_notification}
                     onCheckedChange={handleCheckboxChange("is_send_notification")}
                     disabled={isUpdating}

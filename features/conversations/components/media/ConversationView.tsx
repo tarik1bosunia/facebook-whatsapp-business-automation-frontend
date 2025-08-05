@@ -27,7 +27,7 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { formatDjangoDateTime } from "@/lib/utils";
 import ToggleAutoReplyButton from "./ToggleAutoReplyButton";
 import { Conversation, Contact } from "@/types/conversation";
@@ -73,7 +73,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
   console.log("MESSAGES::", messages);
 
   const handleCreateOrder = () => {
-    toast.success("Order created successfully");
+    toast.success("Order created successfully", { position: "bottom-right" });
   };
 
   const handleAudioPlay = (messageId: string) => {
@@ -96,7 +96,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
     
     if (data) {
       // Here you would typically send the media data to your backend
-      toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} ready to send`);
+      toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} ready to send`, { position: "bottom-right" });
       
       // For now, just log the data for demonstration
       if (type === "contact") {
@@ -109,7 +109,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
         console.log("File data:", { name: (data as FileData).name, size: (data as FileData).size, type: (data as FileData).type });
       }
     } else {
-      toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} attachment selected`);
+      toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} attachment selected`, { position: "bottom-right" });
     }
   };
 

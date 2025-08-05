@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Mic, Square, Play, Pause, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 interface AudioRecorderProps {
   onAudioRecord: (audioData: AudioData) => void;
@@ -68,7 +68,7 @@ const AudioRecorder = ({ onAudioRecord }: AudioRecorderProps) => {
       }, 1000);
 
     } catch (error) {
-      toast.error("Could not access microphone");
+      toast.error("Could not access microphone", { position: "bottom-right" });
       console.error("Error accessing microphone:", error);
     }
   };

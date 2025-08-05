@@ -23,7 +23,7 @@ import {
   Clock,
   ShoppingBag,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { formatDjangoDateTime } from "@/lib/utils";
 import ToggleAutoReplyButton from "./ToggleAutoReply";
 import { Conversation } from "@/types/conversation";
@@ -53,7 +53,7 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
   console.log("MESSEGES::", messages)
 
   const handleCreateOrder = () => {
-    toast.success("Order created successfully");
+    toast.success("Order created successfully", { position: "bottom-right" });
   };
 
   if (!conversation) {

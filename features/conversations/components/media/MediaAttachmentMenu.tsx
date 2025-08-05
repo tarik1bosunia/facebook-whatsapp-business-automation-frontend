@@ -21,7 +21,7 @@ import {
   Mic,
   Camera,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import ContactPicker from "./ContactPicker";
 import AudioRecorder from "./AudioRecorder";
 import CameraCapture from "./CameraCapture";
@@ -124,7 +124,7 @@ const MediaAttachmentMenu = ({ onAttachmentSelect }: MediaAttachmentMenuProps) =
       };
       
       onAttachmentSelect(type, fileData);
-      toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} selected: ${file.name}`);
+      toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} selected: ${file.name}`, { position: "bottom-right" });
     }
     
     // Reset input
@@ -134,19 +134,19 @@ const MediaAttachmentMenu = ({ onAttachmentSelect }: MediaAttachmentMenuProps) =
   const handleContactSelect = (contact: Contact) => {
     onAttachmentSelect("contact", contact);
     setShowContactPicker(false);
-    toast.success("Contact selected");
+    toast.success("Contact selected", { position: "bottom-right" });
   };
 
   const handleAudioRecord = (audioData: AudioData) => {
     onAttachmentSelect("audio", audioData);
     setShowAudioRecorder(false);
-    toast.success("Audio recorded");
+    toast.success("Audio recorded", { position: "bottom-right" });
   };
 
   const handleCameraCapture = (imageData: ImageData) => {
     onAttachmentSelect("camera", imageData);
     setShowCameraCapture(false);
-    toast.success("Photo captured");
+    toast.success("Photo captured", { position: "bottom-right" });
   };
 
   return (

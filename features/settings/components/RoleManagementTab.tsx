@@ -1,7 +1,7 @@
 
 import { useState } from "react";
-import { Plus, Edit, Trash2, Users, Shield, Settings, Check, X } from "lucide-react";
-import { toast } from "sonner";
+import { Plus, Edit, Trash2, Users, Shield } from "lucide-react";
+import { toast } from "react-toastify";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,7 +88,7 @@ const RoleManagementTab = () => {
 
   const handleAddRole = () => {
     if (!formData.name.trim()) {
-      toast.error("Role name is required");
+      toast.error("Role name is required", { position: "bottom-right" });
       return;
     }
 
@@ -106,12 +106,12 @@ const RoleManagementTab = () => {
     setRoles([...roles, newRole]);
     setIsAddDialogOpen(false);
     resetForm();
-    toast.success("Role created successfully");
+    toast.success("Role created successfully", { position: "bottom-right" });
   };
 
   const handleEditRole = (role: Role) => {
     if (role.isSystem) {
-      toast.error("System roles cannot be modified");
+      toast.error("System roles cannot be modified", { position: "bottom-right" });
       return;
     }
     setEditingRole(role);
@@ -138,21 +138,21 @@ const RoleManagementTab = () => {
     setIsEditDialogOpen(false);
     setEditingRole(null);
     resetForm();
-    toast.success("Role updated successfully");
+    toast.success("Role updated successfully", { position: "bottom-right" });
   };
 
   const handleDeleteRole = (roleId: number) => {
     const role = roles.find(r => r.id === roleId);
     if (role?.isSystem) {
-      toast.error("System roles cannot be deleted");
+      toast.error("System roles cannot be deleted", { position: "bottom-right" });
       return;
     }
     if ((role?.userCount ?? 0) > 0) {
-      toast.error("Cannot delete role with assigned users");
+      toast.error("Cannot delete role with assigned users", { position: "bottom-right" });
       return;
     }
     setRoles(roles.filter(r => r.id !== roleId));
-    toast.success("Role deleted successfully");
+    toast.success("Role deleted successfully", { position: "bottom-right" });
   };
 
   const handlePermissionChange = (permissionId: string, checked: boolean) => {

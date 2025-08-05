@@ -1,7 +1,7 @@
 // src/components/UserManagementTab.tsx
 import { useState } from "react";
 import { Plus, User as UserIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -59,7 +59,7 @@ export const UserManagementTab = () => {
 
   const handleAddSubmit = async () => {
     if (!formData.email) {
-      toast.error("Email is required");
+      toast.error("Email is required", { position: "bottom-right" });
       return;
     }
 
@@ -75,9 +75,9 @@ export const UserManagementTab = () => {
     if (success) {
       setIsAddDialogOpen(false);
       resetForm();
-      toast.success("User added successfully");
+      toast.success("User added successfully", { position: "bottom-right" });
     } else {
-      toast.error("Failed to add user");
+      toast.error("Failed to add user", { position: "bottom-right" });
     }
   };
 
@@ -98,9 +98,9 @@ export const UserManagementTab = () => {
       setIsEditDialogOpen(false);
       setEditingUser(null);
       resetForm();
-      toast.success("User updated successfully");
+      toast.success("User updated successfully", { position: "bottom-right" });
     } else {
-      toast.error("Failed to update user");
+      toast.error("Failed to update user", { position: "bottom-right" });
     }
   };
 

@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Shield, Search, Filter, Plus, Edit, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,13 +106,13 @@ const PermissionManagementTab = () => {
 
   const handleAddPermission = () => {
     if (!formData.name.trim() || !formData.resource.trim() || !formData.action.trim()) {
-      toast.error("Name, resource, and action are required");
+      toast.error("Name, resource, and action are required", { position: "bottom-right" });
       return;
     }
 
     const id = `${formData.resource}.${formData.action}`;
     if (permissions.find(p => p.id === id)) {
-      toast.error("Permission with this resource and action already exists");
+      toast.error("Permission with this resource and action already exists", { position: "bottom-right" });
       return;
     }
 
@@ -131,12 +131,12 @@ const PermissionManagementTab = () => {
     setPermissions([...permissions, newPermission]);
     setIsAddDialogOpen(false);
     resetForm();
-    toast.success("Permission created successfully");
+    toast.success("Permission created successfully", { position: "bottom-right" });
   };
 
   const handleEditPermission = (permission: Permission) => {
     if (permission.isSystem) {
-      toast.error("System permissions cannot be modified");
+      toast.error("System permissions cannot be modified", { position: "bottom-right" });
       return;
     }
     setEditingPermission(permission);
@@ -166,21 +166,21 @@ const PermissionManagementTab = () => {
     setIsEditDialogOpen(false);
     setEditingPermission(null);
     resetForm();
-    toast.success("Permission updated successfully");
+    toast.success("Permission updated successfully", { position: "bottom-right" });
   };
 
   const handleDeletePermission = (permissionId: string) => {
     const permission = permissions.find(p => p.id === permissionId);
     if (permission?.isSystem) {
-      toast.error("System permissions cannot be deleted");
+      toast.error("System permissions cannot be deleted", { position: "bottom-right" });
       return;
     }
     if ((permission?.rolesAssigned.length ?? 0) > 0) {
-      toast.error("Cannot delete permission assigned to roles");
+      toast.error("Cannot delete permission assigned to roles", { position: "bottom-right" });
       return;
     }
     setPermissions(permissions.filter(p => p.id !== permissionId));
-    toast.success("Permission deleted successfully");
+    toast.success("Permission deleted successfully", { position: "bottom-right" });
   };
 
   const PermissionFormDialog = ({ 

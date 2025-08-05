@@ -3,7 +3,7 @@ import { useState } from "react";
 
 
 import { Facebook, MessageSquare, Settings as SettingsIcon, Users, Key, User } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ const Settings = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      toast.success("Settings saved successfully");
+      toast.success("Settings saved successfully", { position: "bottom-right" });
     }, 1000);
   };
 
@@ -104,7 +104,7 @@ const Settings = () => {
                   <Badge>Production</Badge>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Input type="password" value="••••••••••••••••••••••••••••••" readOnly className="font-mono" />
+                  <Input id="api-key-production" type="password" value="••••••••••••••••••••••••••••••" readOnly className="font-mono" />
                   <Button variant="outline">
                     Reveal
                   </Button>
@@ -123,7 +123,7 @@ const Settings = () => {
                   <Badge variant="outline">Development</Badge>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Input type="password" value="••••••••••••••••••••••••••••••" readOnly className="font-mono" />
+                  <Input id="api-key-development" type="password" value="••••••••••••••••••••••••••••••" readOnly className="font-mono" />
                   <Button variant="outline">
                     Reveal
                   </Button>

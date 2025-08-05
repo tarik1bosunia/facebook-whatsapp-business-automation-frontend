@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Camera, RotateCcw, Check, Video, Square } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 interface CameraCaptureProps {
   onCapture: (imageData: { blob: Blob; url: string; type: string; name: string }) => void;
@@ -37,7 +37,7 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
         videoRef.current.srcObject = mediaStream;
       }
     } catch (error) {
-      toast.error("Could not access camera");
+      toast.error("Could not access camera", { position: "bottom-right" });
       console.error("Error accessing camera:", error);
     } finally {
       setIsLoading(false);
@@ -111,7 +111,7 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
       }, 1000);
 
     } catch (error) {
-      toast.error("Could not start video recording");
+      toast.error("Could not start video recording", { position: "bottom-right" });
       console.error("Error starting video recording:", error);
     }
   };

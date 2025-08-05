@@ -36,18 +36,26 @@ export const useFacebookIntegrationForm = () => {
   const [isDirty, setIsDirty] = useState(false);
 
   const handleChange =
-    (field: keyof IntegrationConfig) =>
+    (field: keyof IntegrationConfig | "platform_id_facebook" | "verify_token_facebook") =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value =
         e.target.type === "checkbox" ? e.target.checked : e.target.value;
-      setFormData((prev) => ({ ...prev, [field]: value }));
+      let actualField: keyof IntegrationConfig;
+      if (field === "platform_id_facebook") {
+        actualField = "platform_id";
+      } else if (field === "verify_token_facebook") {
+        actualField = "verify_token";
+      } else {
+        actualField = field;
+      }
+      setFormData((prev) => ({ ...prev, [actualField]: value }));
       setIsDirty(true);
 
       // Clear field error when user types
-      if (fieldErrors[field]) {
+      if (fieldErrors[actualField]) {
         setFieldErrors((prev) => {
           const newErrors = { ...prev };
-          delete newErrors[field];
+          delete newErrors[actualField];
           return newErrors;
         });
       }
@@ -67,36 +75,49 @@ export const useFacebookIntegrationForm = () => {
 
   const handleError = useCallback(
     (error: FetchBaseQueryError | SerializedError) => {
-      if ("data" in error && isErrorResponse(error.data)) {
-        const errData: ErrorResponse = error.data;
-        const { errors: apiErrors } = errData;
+      let errorMessage = "An unexpected error occurred";
 
-        const newFieldErrors: FieldErrorMap = {};
+      if ("data" in error) {
+        const errorData = error.data;
+        if (isErrorResponse(errorData)) {
+          const errData: ErrorResponse = errorData;
+          const { errors: apiErrors } = errData;
 
-        Object.entries(apiErrors).forEach(([field, errors]) => {
-          if (field !== "non_field_errors" && field !== "detail") {
-            // Convert error to array format if it isn't already
-            newFieldErrors[field] = Array.isArray(errors)
-              ? errors.map(String)
-              : [String(errors)];
+          const newFieldErrors: FieldErrorMap = {};
+
+          Object.entries(apiErrors).forEach(([field, errors]) => {
+            if (field !== "non_field_errors" && field !== "detail") {
+              newFieldErrors[field] = Array.isArray(errors)
+                ? errors.map(String)
+                : [String(errors)];
+            }
+          });
+
+          if (Object.keys(newFieldErrors).length > 0) {
+            setFieldErrors(newFieldErrors);
           }
-        });
 
-        if (Object.keys(newFieldErrors).length > 0) {
-          setFieldErrors(newFieldErrors);
+          errorMessage =
+            String(apiErrors.non_field_errors?.[0] || "") ||
+            String(apiErrors.detail?.[0] || "") ||
+            errorMessage;
+        } else if (
+          typeof errorData === "object" &&
+          errorData !== null &&
+          "error" in errorData &&
+          typeof (errorData as { error: string }).error === "string"
+        ) {
+          // Handle the specific case where data contains a top-level 'error' string
+          errorMessage = (errorData as { error: string }).error;
         }
+      } else if ("error" in error && typeof error.error === "string") {
+        errorMessage = error.error;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
 
-        // Show non-field errors
-        const message =
-          apiErrors.non_field_errors?.[0] ||
-          apiErrors.detail?.[0] ||
-          "An error occurred";
-
-        if (message) {
-          toast.error(String(message));
-        }
-      } else {
-        toast.error("An unexpected error occurred");
+      if (errorMessage) {
+        toast.error(errorMessage);
       }
     },
     []
