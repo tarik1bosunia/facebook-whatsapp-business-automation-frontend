@@ -1,7 +1,7 @@
 'use client'
 
 
-import CustomersList from "@/features/customers/CustomersList";
+import CustomersList from "@/features/customers/components/CustomersList";
 import { useGetCustomersQuery } from "@/lib/redux/services/customerApi";
 
 export default function Customers() {

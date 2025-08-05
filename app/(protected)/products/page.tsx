@@ -1,6 +1,6 @@
 
 
-import { ProductTable } from "@/features/products/ProductTable"
+import { ProductTable } from "@/features/products/components/ProductTable"
 
 
 export default function ProductsPage() {

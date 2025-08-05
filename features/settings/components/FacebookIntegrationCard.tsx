@@ -27,7 +27,6 @@ export default function FacebookIntegrationCard() {
     isFetching,
     isUpdating,
     isConnected,
-    isDirty,
     platformId,
   } = useFacebookIntegrationForm();
 

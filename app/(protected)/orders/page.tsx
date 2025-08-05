@@ -1,7 +1,7 @@
 
 
 
-import OrdersList from "@/features/orders/OrdersList";
+import OrdersList from "@/features/orders/components/OrdersList";
 
 
 export default function Orders() {

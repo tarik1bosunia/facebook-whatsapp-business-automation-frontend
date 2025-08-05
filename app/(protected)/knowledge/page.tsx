@@ -1,5 +1,5 @@
 
-import KnowledgeBase from "@/features/knowledge/KnowledgeBase";
+import KnowledgeBase from "@/features/knowledge/components/KnowledgeBase";
 
 const Knowledge = () => {
   return (

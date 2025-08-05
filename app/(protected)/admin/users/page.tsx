@@ -2,10 +2,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { User } from "lucide-react";
-import { UserManagementTab } from "@/features/settings";
-import RoleManagementTab from "@/features/settings/RoleManagementTab";
-import PermissionManagementTab from "@/features/settings/PermissionManagementTab";
-import AuditLogTab from "@/features/settings/AuditLogTab";
+import { UserManagementTab } from "@/features/settings/user-management/UserManagementTab";
+import RoleManagementTab from "@/features/settings/components/RoleManagementTab";
+import PermissionManagementTab from "@/features/settings/components/PermissionManagementTab";
+import AuditLogTab from "@/features/settings/components/AuditLogTab";
 
 const AdminUsers = () => {
   return (
