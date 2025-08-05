@@ -6,12 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
-import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import Link from "next/link";
 import useLogin from "@/lib/hooks/use-login";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/redux/hooks/reduxHooks";
+import { GoogleLoginButton } from "@/features/auth/components/GoogleLoginButton";
 
 const Login = () => {
     const {

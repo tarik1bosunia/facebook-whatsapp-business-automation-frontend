@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function Setup(){
-   const verify =  useVerify()
+   useVerify()
 
     return (
         <>

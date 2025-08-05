@@ -1,8 +1,8 @@
 // In your main layout or App component
 import { useEffect } from 'react';
-import { selectIsAuthenticated } from '@/lib/redux/slices/authSlice';
-import { socketManager } from '@/lib/websocket/websocketManager1';
 import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from '../redux/features/authSlice';
+import { socketManager } from './websocketManager';
 
 
 export default function WebSocketInitializer () {

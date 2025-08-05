@@ -2,8 +2,8 @@
 import { useEffect } from "react";
 
 import { useAppDispatch } from "../redux/hooks/reduxHooks";
-import { finishedInitialLoad } from "../redux/slices/authSlice";
 import { useVerifyTokenMutation } from "../redux/features/auth/authApi";
+import { finishedInitialLoad } from "../redux/features/authSlice";
 
 
 

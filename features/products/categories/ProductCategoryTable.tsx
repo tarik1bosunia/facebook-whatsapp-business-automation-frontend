@@ -15,8 +15,9 @@ import { useState } from "react";
 import { ProductCategory } from "@/types/product";
 import { useDeleteProductCategoryMutation } from "@/lib/redux/features/productsApi";
 import { ProductCategoryFormModal } from "./ProductCategoryFormModal";
-import { ConfirmDialog } from "./../ConfirmDialog";
+
 import Link from "next/link";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 
 interface ProductCategoryTableProps {
     categories: ProductCategory[];

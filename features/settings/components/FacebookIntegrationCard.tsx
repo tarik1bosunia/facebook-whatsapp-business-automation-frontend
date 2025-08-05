@@ -15,14 +15,13 @@ import {
   Skeleton,
 } from "@/components/ui";
 import { useFacebookIntegrationForm } from "@/lib/hooks/useFacebookIntegrationForm";
-import { useSubmitShortLivedTokenMutation } from '@/lib/redux/api/facebookApi';
+import { useSubmitFacebookAppConfigMutation, useSubmitFacebookAccessTokenMutation, useSubmitFacebookVerifyTokenMutation } from '@/lib/redux/api/facebookApi';
 import { toast } from 'react-toastify';
 
 export default function FacebookIntegrationCard() {
   const {
     formData,
     fieldErrors,
-    handleChange,
     handleCheckboxChange,
     handleSubmit,
     handleConnect,
@@ -34,18 +33,26 @@ export default function FacebookIntegrationCard() {
   } = useFacebookIntegrationForm();
 
   const [shortLivedToken, setShortLivedToken] = useState('');
-  const [submitToken, { isLoading: isSubmittingToken }] = useSubmitShortLivedTokenMutation();
+  const [facebookAppId, setFacebookAppId] = useState('');
+  const [facebookAppSecret, setFacebookAppSecret] = useState('');
+  const [verifyToken, setVerifyToken] = useState('');
+  const [submitAppConfig, { isLoading: isSubmittingAppConfig }] = useSubmitFacebookAppConfigMutation();
+  const [submitAccessToken, { isLoading: isSubmittingAccessToken }] = useSubmitFacebookAccessTokenMutation();
+  const [submitVerifyToken, { isLoading: isSubmittingVerifyToken }] = useSubmitFacebookVerifyTokenMutation();
 
-  const handleShortLivedTokenSubmit = async () => {
+  const handleAppConfigSubmit = async () => {
     try {
-      await submitToken({ access_token: shortLivedToken }).unwrap();
-      toast.success("Short-lived token submitted successfully!", { position: "bottom-right" });
-      setShortLivedToken(''); // Clear the input after successful submission
+      await submitAppConfig({
+        app_id: facebookAppId,
+        app_secret: facebookAppSecret,
+      }).unwrap();
+      toast.success("Facebook App ID and Secret submitted successfully!", { position: "bottom-right" });
+      setFacebookAppId('');
+      setFacebookAppSecret('');
     } catch (error: unknown) {
-      console.error("Failed to submit short-lived token:", error);
-      let errorMessage = 'Failed to submit short-lived token. Please try again.';
+      console.error("Failed to submit Facebook App ID and Secret:", error);
+      let errorMessage = 'Failed to submit Facebook App ID and Secret. Please try again.';
 
-      // Type guard for RTK Query errors
       interface RTKQueryErrorData {
         errors?: Record<string, string[] | string>;
         message?: string;
@@ -69,7 +76,6 @@ export default function FacebookIntegrationCard() {
           } else if (rtkErrorData.error) {
             errorMessage = `API Error: ${rtkErrorData.error}`;
           } else if (rtkErrorData.errors) {
-            // If there are specific field errors, show them concisely
             errorMessage = Object.entries(rtkErrorData.errors)
               .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
               .join('; ');
@@ -84,13 +90,120 @@ export default function FacebookIntegrationCard() {
       } else if (error instanceof Error) {
         errorMessage = `Application Error: ${error.message}`;
       }
-      // Fallback for any unhandled error types
+      if (errorMessage.includes("Facebook API error")) {
+        errorMessage = "Failed to connect to Facebook. Please check your App ID and Secret and try again.";
+      }
+      toast.error(`Error submitting App ID and Secret: ${errorMessage}`, { position: "bottom-right" });
+    }
+  };
+
+  const handleAccessTokenSubmit = async () => {
+    try {
+      await submitAccessToken({
+        access_token: shortLivedToken,
+      }).unwrap();
+      toast.success("Short-lived token submitted successfully!", { position: "bottom-right" });
+      setShortLivedToken('');
+    } catch (error: unknown) {
+      console.error("Failed to submit short-lived token:", error);
+      let errorMessage = 'Failed to submit short-lived token. Please try again.';
+
+      interface RTKQueryErrorData {
+        errors?: Record<string, string[] | string>;
+        message?: string;
+        error?: string;
+      }
+
+      interface RTKQueryError {
+        data?: RTKQueryErrorData | string;
+        error?: string;
+      }
+
+      const isRTKQueryError = (err: unknown): err is RTKQueryError => {
+        return typeof err === 'object' && err !== null && ('data' in err || 'error' in err);
+      };
+
+      if (isRTKQueryError(error)) {
+        if (typeof error.data === 'object' && error.data !== null) {
+          const rtkErrorData = error.data;
+          if (rtkErrorData.message) {
+            errorMessage = `API Error: ${rtkErrorData.message}`;
+          } else if (rtkErrorData.error) {
+            errorMessage = `API Error: ${rtkErrorData.error}`;
+          } else if (rtkErrorData.errors) {
+            errorMessage = Object.entries(rtkErrorData.errors)
+              .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+              .join('; ');
+          } else {
+            errorMessage = 'An unknown API error occurred.';
+          }
+        } else if (typeof error.data === 'string') {
+          errorMessage = `API Error: ${error.data}`;
+        } else if (error.error) {
+          errorMessage = `Network Error: ${error.error}`;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = `Application Error: ${error.message}`;
+      }
       if (errorMessage.includes("Facebook API error")) {
         errorMessage = "Failed to connect to Facebook. Please check your token and try again.";
       }
-
-      
       toast.error(`Error submitting token: ${errorMessage}`, { position: "bottom-right" });
+    }
+  };
+
+  const handleVerifyTokenSubmit = async () => {
+    try {
+      await submitVerifyToken({
+        verify_token: verifyToken,
+      }).unwrap();
+      toast.success("Verify token submitted successfully!", { position: "bottom-right" });
+      setVerifyToken('');
+    } catch (error: unknown) {
+      console.error("Failed to submit verify token:", error);
+      let errorMessage = 'Failed to submit verify token. Please try again.';
+
+      interface RTKQueryErrorData {
+        errors?: Record<string, string[] | string>;
+        message?: string;
+        error?: string;
+      }
+
+      interface RTKQueryError {
+        data?: RTKQueryErrorData | string;
+        error?: string;
+      }
+
+      const isRTKQueryError = (err: unknown): err is RTKQueryError => {
+        return typeof err === 'object' && err !== null && ('data' in err || 'error' in err);
+      };
+
+      if (isRTKQueryError(error)) {
+        if (typeof error.data === 'object' && error.data !== null) {
+          const rtkErrorData = error.data;
+          if (rtkErrorData.message) {
+            errorMessage = `API Error: ${rtkErrorData.message}`;
+          } else if (rtkErrorData.error) {
+            errorMessage = `API Error: ${rtkErrorData.error}`;
+          } else if (rtkErrorData.errors) {
+            errorMessage = Object.entries(rtkErrorData.errors)
+              .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+              .join('; ');
+          } else {
+            errorMessage = 'An unknown API error occurred.';
+          }
+        } else if (typeof error.data === 'string') {
+          errorMessage = `API Error: ${error.data}`;
+        } else if (error.error) {
+          errorMessage = `Network Error: ${error.error}`;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = `Application Error: ${error.message}`;
+      }
+      if (errorMessage.includes("Facebook API error")) {
+        errorMessage = "Failed to connect to Facebook. Please check your verify token and try again.";
+      }
+      toast.error(`Error submitting verify token: ${errorMessage}`, { position: "bottom-right" });
     }
   };
 
@@ -132,6 +245,37 @@ export default function FacebookIntegrationCard() {
         <CardContent className="space-y-4">
           <div className="space-y-4">
             <div>
+              <Label htmlFor="facebook-app-id">Facebook App ID</Label>
+              <Input
+                id="facebook-app-id"
+                type="text"
+                value={facebookAppId}
+                onChange={(e) => setFacebookAppId(e.target.value)}
+                placeholder="Enter Facebook App ID"
+                disabled={isSubmittingAppConfig}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="facebook-app-secret">Facebook App Secret</Label>
+              <Input
+                id="facebook-app-secret"
+                type="password"
+                value={facebookAppSecret}
+                onChange={(e) => setFacebookAppSecret(e.target.value)}
+                placeholder="Enter Facebook App Secret"
+                disabled={isSubmittingAppConfig}
+              />
+            </div>
+            <Button
+              type="button"
+              onClick={handleAppConfigSubmit}
+              disabled={isSubmittingAppConfig}
+            >
+              {isSubmittingAppConfig ? "Submitting App Config..." : "Submit App ID and Secret"}
+            </Button>
+
+            <div>
               <Label htmlFor="short-lived-token">Short-lived Access Token</Label>
               <Input
                 id="short-lived-token"
@@ -139,55 +283,27 @@ export default function FacebookIntegrationCard() {
                 value={shortLivedToken}
                 onChange={(e) => setShortLivedToken(e.target.value)}
                 placeholder="Enter short-lived token"
-                disabled={isSubmittingToken}
+                disabled={isSubmittingAccessToken}
               />
             </div>
             <Button
               type="button"
-              onClick={handleShortLivedTokenSubmit}
-              disabled={isSubmittingToken}
+              onClick={handleAccessTokenSubmit}
+              disabled={isSubmittingAccessToken}
             >
-              {isSubmittingToken ? "Submitting..." : "Submit Short-lived Token"}
+              {isSubmittingAccessToken ? "Submitting Access Token..." : "Submit Short-lived Token"}
             </Button>
-            <div>
-              <Label htmlFor="platform_id_facebook">Page ID</Label>
-              <Input
-                id="platform_id_facebook"
-                value={formData.platform_id}
-                onChange={handleChange("platform_id_facebook")}
-                disabled={isUpdating}
-              />
-              {fieldErrors.platform_id?.map((error, index) => (
-                <p key={index} className="text-sm text-red-500">
-                  {error}
-                </p>
-              ))}
-            </div>
 
-            <div>
-              <Label htmlFor="facebook-access_token">Access Token</Label>
-              <Input
-                id="facebook-access_token"
-                type="password"
-                value={formData.access_token}
-                onChange={handleChange("access_token")}
-                disabled={isUpdating}
-                placeholder={isConnected ? "********" : "Enter token"}
-              />
-              {fieldErrors.access_token?.map((error, index) => (
-                <p key={index} className="text-sm text-red-500">
-                  {error}
-                </p>
-              ))}
-            </div>
+            
+
 
             <div>
               <Label htmlFor="facebook-verify_token">Verify Token</Label>
               <Input
                 id="facebook-verify_token"
                 type="password"
-                value={formData.verify_token}
-                onChange={handleChange("verify_token_facebook")}
+                value={verifyToken}
+                onChange={(e)=> setVerifyToken(e.target.value)}
                 disabled={isUpdating}
                 placeholder={isConnected ? "********" : "Enter token"}
               />
@@ -197,6 +313,15 @@ export default function FacebookIntegrationCard() {
                 </p>
               ))}
             </div>
+
+              <Button
+              type="button"
+              onClick={handleVerifyTokenSubmit}
+              disabled={isSubmittingVerifyToken}
+            >
+              {isSubmittingVerifyToken ? "Submitting Verify Token..." : "Submit verify token"}
+            </Button>
+
           </div>
 
           <div className="pt-4 border-t space-y-4">

@@ -24,9 +24,11 @@ class WebSocketManager {
     try {
       const validToken = await tokenManager.getValidToken();
       if (!validToken) {
+        console.error("WebSocket: No valid token found. Cannot connect.");
         store.dispatch(setConnectionStatus("error"));
         return;
       }
+      console.log("WebSocket: Attempting to connect...");
       store.dispatch(setConnectionStatus("connecting"));
 
       const wsURL = this.buildWebSocketUrl(validToken);
@@ -34,8 +36,8 @@ class WebSocketManager {
 
       this.setupEventHandlers();
     } catch (error) {
-      //   this.handleConnectionError(error);
-      console.log(error);
+      console.error("WebSocket: Connection attempt failed:", error);
+      store.dispatch(setConnectionStatus("error"));
     }
   }
 
@@ -84,12 +86,12 @@ class WebSocketManager {
   }
 
   private handleClose(event: CloseEvent): void {
-    console.log(`WebSocket closed with code ${event.code}: ${event.reason}`);
-    //   this.cleanup();
+    console.log(`WebSocket: Connection closed. Code: ${event.code}, Reason: ${event.reason}`);
+    store.dispatch(setConnectionStatus("disconnected"));
   }
 
   private handleError(error: Event): void {
-    console.error("WebSocket error:", error);
+    console.error("WebSocket: An error occurred.", error);
     store.dispatch(setConnectionStatus("error"));
   }
 
@@ -171,3 +173,4 @@ class WebSocketManager {
 }
 
 export const socketManager = WebSocketManager.getInstance();
+

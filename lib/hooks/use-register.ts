@@ -3,7 +3,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../redux/hooks/reduxHooks";
 import { useRegisterUserMutation } from "../redux/features/auth/authApi";
-import { setCredentials } from "../redux/slices/authSlice";
+import { setCredentials } from "../redux/features/authSlice";
 
 // type TokenResponse = {
 //   token: {

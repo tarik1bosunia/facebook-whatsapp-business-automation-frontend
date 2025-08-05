@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks/reduxHooks';
-import { markNotificationRead } from '@/lib/redux/slices/chatSlice';
 import { FiBell, FiX } from 'react-icons/fi';
+import { markNotificationRead } from '@/lib/redux/features/chatSlice';
 
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);

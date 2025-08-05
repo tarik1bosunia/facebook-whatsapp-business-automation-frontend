@@ -1,8 +1,8 @@
 // src/components/users/UserDetail.tsx
 import { format } from 'date-fns';
-import Spinner from '../ui/Spinner';
 import { FaTimes } from 'react-icons/fa';
 import { useGetUserQuery } from '@/lib/redux/features/superadmin/userApi';
+import Spinner from '@/components/ui/Spinner';
 interface UserDetailProps {
     userId: number;
     onClose: () => void;

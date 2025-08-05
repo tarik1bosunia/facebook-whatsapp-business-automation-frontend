@@ -1,6 +1,6 @@
 // src/components/users/DeleteUserModal.tsx
+import Spinner from '@/components/ui/Spinner';
 import { useDeleteUserMutation } from '@/lib/redux/features/superadmin/userApi';
-import Spinner from '../ui/Spinner';
 import { FaTimes, FaTrash } from 'react-icons/fa';
 
 interface DeleteUserModalProps {

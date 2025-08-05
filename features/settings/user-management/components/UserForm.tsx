@@ -4,13 +4,13 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import Spinner from '../ui/Spinner';
 import {
   useGetUserQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   CreateUserRequest,
 } from '@/lib/redux/features/superadmin/userApi';
+import Spinner from '@/components/ui/Spinner';
 
 interface UserFormProps {
   userId?: number | null;

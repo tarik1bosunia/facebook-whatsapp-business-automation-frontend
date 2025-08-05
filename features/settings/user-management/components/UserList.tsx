@@ -4,9 +4,9 @@ import { FaEdit, FaTrashAlt, FaEye } from 'react-icons/fa';
 import { useState } from 'react';
 import UserForm from './UserForm';
 import UserDetail from './UserDetail';
-import Spinner from '../ui/Spinner';
 import { useGetUsersQuery } from '@/lib/redux/features/superadmin/userApi';
 import DeleteUserModal from './DeleteUserModal';
+import Spinner from '@/components/ui/Spinner';
 
 const UserList = () => {
   const { data, isLoading, error } = useGetUsersQuery();
