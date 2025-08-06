@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Facebook } from "lucide-react";
+import { Facebook, Eye, EyeOff } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -15,7 +15,7 @@ import {
   Skeleton,
 } from "@/components/ui";
 import { useFacebookIntegrationForm } from "@/lib/hooks/useFacebookIntegrationForm";
-import { useSubmitFacebookAppConfigMutation, useSubmitFacebookAccessTokenMutation, useSubmitFacebookVerifyTokenMutation } from '@/lib/redux/api/facebookApi';
+import { useSubmitFacebookAppConfigMutation, useSubmitFacebookAccessTokenMutation, useSubmitFacebookVerifyTokenMutation, useGetFacebookIntegrationStatusQuery } from '@/lib/redux/api/facebookApi';
 import { toast } from 'react-toastify';
 
 export default function FacebookIntegrationCard() {
@@ -26,16 +26,24 @@ export default function FacebookIntegrationCard() {
     handleSubmit,
     handleConnect,
     handleDisconnect,
-    isFetching,
     isUpdating,
     isConnected,
-    platformId,
+    // platformId,
   } = useFacebookIntegrationForm();
 
+  const { data: integrationStatus, isLoading: isLoadingStatus, refetch: refetchIntegrationStatus } = useGetFacebookIntegrationStatusQuery();
+
+  const [showAppConfigFields, setShowAppConfigFields] = useState(false);
+  const [showAccessTokenField, setShowAccessTokenField] = useState(false);
+  const [showVerifyTokenField, setShowVerifyTokenField] = useState(false);
+
   const [shortLivedToken, setShortLivedToken] = useState('');
+  const [showShortLivedToken, setShowShortLivedToken] = useState(false);
   const [facebookAppId, setFacebookAppId] = useState('');
   const [facebookAppSecret, setFacebookAppSecret] = useState('');
+  const [showFacebookAppSecret, setShowFacebookAppSecret] = useState(false);
   const [verifyToken, setVerifyToken] = useState('');
+  const [showVerifyToken, setShowVerifyToken] = useState(false);
   const [submitAppConfig, { isLoading: isSubmittingAppConfig }] = useSubmitFacebookAppConfigMutation();
   const [submitAccessToken, { isLoading: isSubmittingAccessToken }] = useSubmitFacebookAccessTokenMutation();
   const [submitVerifyToken, { isLoading: isSubmittingVerifyToken }] = useSubmitFacebookVerifyTokenMutation();
@@ -49,6 +57,8 @@ export default function FacebookIntegrationCard() {
       toast.success("Facebook App ID and Secret submitted successfully!", { position: "bottom-right" });
       setFacebookAppId('');
       setFacebookAppSecret('');
+      refetchIntegrationStatus();
+      setShowAppConfigFields(false);
     } catch (error: unknown) {
       console.error("Failed to submit Facebook App ID and Secret:", error);
       let errorMessage = 'Failed to submit Facebook App ID and Secret. Please try again.';
@@ -104,8 +114,10 @@ export default function FacebookIntegrationCard() {
       }).unwrap();
       toast.success("Short-lived token submitted successfully!", { position: "bottom-right" });
       setShortLivedToken('');
+      refetchIntegrationStatus();
+      setShowAccessTokenField(false);
     } catch (error: unknown) {
-      console.error("Failed to submit short-lived token:", error);
+      // console.error("Failed to submit short-lived token:", error);
       let errorMessage = 'Failed to submit short-lived token. Please try again.';
 
       interface RTKQueryErrorData {
@@ -146,7 +158,7 @@ export default function FacebookIntegrationCard() {
         errorMessage = `Application Error: ${error.message}`;
       }
       if (errorMessage.includes("Facebook API error")) {
-        errorMessage = "Failed to connect to Facebook. Please check your token and try again.";
+        errorMessage = "Failed to connect to Facebook. (Please check your token or reset App ID and App Seret) and try again.";
       }
       toast.error(`Error submitting token: ${errorMessage}`, { position: "bottom-right" });
     }
@@ -159,6 +171,8 @@ export default function FacebookIntegrationCard() {
       }).unwrap();
       toast.success("Verify token submitted successfully!", { position: "bottom-right" });
       setVerifyToken('');
+      refetchIntegrationStatus();
+      setShowVerifyTokenField(false);
     } catch (error: unknown) {
       console.error("Failed to submit verify token:", error);
       let errorMessage = 'Failed to submit verify token. Please try again.';
@@ -207,7 +221,7 @@ export default function FacebookIntegrationCard() {
     }
   };
 
-  if (isFetching) {
+  if (isLoadingStatus) {
     return (
       <Card>
         <CardHeader>
@@ -229,6 +243,10 @@ export default function FacebookIntegrationCard() {
     );
   }
 
+  const appConfigSet = integrationStatus?.app_id_set && integrationStatus?.app_secret_set;
+  const longLiveTokenSet = integrationStatus?.long_live_token_set;
+  const verifyTokenSet = integrationStatus?.verify_token_set;
+
   return (
     <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
       <Card>
@@ -243,86 +261,193 @@ export default function FacebookIntegrationCard() {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="facebook-app-id">Facebook App ID</Label>
-              <Input
-                id="facebook-app-id"
-                type="text"
-                value={facebookAppId}
-                onChange={(e) => setFacebookAppId(e.target.value)}
-                placeholder="Enter Facebook App ID"
-                disabled={isSubmittingAppConfig}
-              />
-            </div>
+          {/* Facebook App ID and App Secret */}
+          {!appConfigSet || showAppConfigFields ? (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="facebook-app-id">Facebook App ID</Label>
+                <Input
+                  id="facebook-app-id"
+                  type="text"
+                  value={facebookAppId}
+                  onChange={(e) => setFacebookAppId(e.target.value)}
+                  placeholder="Enter Facebook App ID"
+                  disabled={isSubmittingAppConfig}
+                />
+              </div>
 
-            <div>
-              <Label htmlFor="facebook-app-secret">Facebook App Secret</Label>
-              <Input
-                id="facebook-app-secret"
-                type="password"
-                value={facebookAppSecret}
-                onChange={(e) => setFacebookAppSecret(e.target.value)}
-                placeholder="Enter Facebook App Secret"
-                disabled={isSubmittingAppConfig}
-              />
-            </div>
-            <Button
-              type="button"
-              onClick={handleAppConfigSubmit}
-              disabled={isSubmittingAppConfig}
-            >
-              {isSubmittingAppConfig ? "Submitting App Config..." : "Submit App ID and Secret"}
-            </Button>
-
-            <div>
-              <Label htmlFor="short-lived-token">Short-lived Access Token</Label>
-              <Input
-                id="short-lived-token"
-                type="text"
-                value={shortLivedToken}
-                onChange={(e) => setShortLivedToken(e.target.value)}
-                placeholder="Enter short-lived token"
-                disabled={isSubmittingAccessToken}
-              />
-            </div>
-            <Button
-              type="button"
-              onClick={handleAccessTokenSubmit}
-              disabled={isSubmittingAccessToken}
-            >
-              {isSubmittingAccessToken ? "Submitting Access Token..." : "Submit Short-lived Token"}
-            </Button>
-
-            
-
-
-            <div>
-              <Label htmlFor="facebook-verify_token">Verify Token</Label>
-              <Input
-                id="facebook-verify_token"
-                type="password"
-                value={verifyToken}
-                onChange={(e)=> setVerifyToken(e.target.value)}
-                disabled={isUpdating}
-                placeholder={isConnected ? "********" : "Enter token"}
-              />
-              {fieldErrors.verify_token?.map((error, index) => (
-                <p key={index} className="text-sm text-red-500">
-                  {error}
-                </p>
-              ))}
-            </div>
-
+              <div>
+                <Label htmlFor="facebook-app-secret">Facebook App Secret</Label>
+                <div className="relative">
+                  <Input
+                    id="facebook-app-secret"
+                    type={showFacebookAppSecret ? "text" : "password"}
+                    value={facebookAppSecret}
+                    onChange={(e) => setFacebookAppSecret(e.target.value)}
+                    placeholder="Enter Facebook App Secret"
+                    disabled={isSubmittingAppConfig}
+                    className="pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowFacebookAppSecret((prev) => !prev)}
+                  >
+                    {showFacebookAppSecret ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+              </div>
               <Button
+                type="button"
+                onClick={handleAppConfigSubmit}
+                disabled={isSubmittingAppConfig}
+              >
+                {isSubmittingAppConfig ? "Submitting App Config..." : "Submit App ID and Secret"}
+              </Button>
+              {appConfigSet && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowAppConfigFields(false)}
+                >
+                  Cancel
+                </Button>
+              )}
+            </div>
+          ) : (
+            <Button
               type="button"
-              onClick={handleVerifyTokenSubmit}
-              disabled={isSubmittingVerifyToken}
+              variant="outline"
+              onClick={() => setShowAppConfigFields(true)}
             >
-              {isSubmittingVerifyToken ? "Submitting Verify Token..." : "Submit verify token"}
+              Reset Facebook App ID and Secret
             </Button>
+          )}
 
-          </div>
+          {/* Short-lived Access Token */}
+          {appConfigSet && (!longLiveTokenSet || showAccessTokenField) ? (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="short-lived-token">Short-lived Access Token</Label>
+                <div className="relative">
+                  <Input
+                    id="short-lived-token"
+                    type={showShortLivedToken ? "text" : "password"}
+                    value={shortLivedToken}
+                    onChange={(e) => setShortLivedToken(e.target.value)}
+                    placeholder="Enter short-lived token"
+                    disabled={isSubmittingAccessToken}
+                    className="pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowShortLivedToken((prev) => !prev)}
+                  >
+                    {showShortLivedToken ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+              <Button
+                type="button"
+                onClick={handleAccessTokenSubmit}
+                disabled={isSubmittingAccessToken}
+              >
+                {isSubmittingAccessToken ? "Submitting Access Token..." : "Submit Short-lived Token"}
+              </Button>
+              {longLiveTokenSet && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowAccessTokenField(false)}
+                >
+                  Cancel
+                </Button>
+              )}
+            </div>
+          ) : appConfigSet && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowAccessTokenField(true)}
+            >
+              Reset Access Token
+            </Button>
+          )}
+
+          {/* Verify Token */}
+          {appConfigSet && longLiveTokenSet && (!verifyTokenSet || showVerifyTokenField) ? (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="facebook-verify_token">Verify Token</Label>
+                <div className="relative">
+                  <Input
+                    id="facebook-verify_token"
+                    type={showVerifyToken ? "text" : "password"}
+                    value={verifyToken}
+                    onChange={(e) => setVerifyToken(e.target.value)}
+                    disabled={isSubmittingVerifyToken}
+                    placeholder="Enter token"
+                    className="pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowVerifyToken((prev) => !prev)}
+                  >
+                    {showVerifyToken ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+                {fieldErrors.verify_token?.map((error, index) => (
+                  <p key={index} className="text-sm text-red-500">
+                    {error}
+                  </p>
+                ))}
+              </div>
+              <Button
+                type="button"
+                onClick={handleVerifyTokenSubmit}
+                disabled={isSubmittingVerifyToken}
+              >
+                {isSubmittingVerifyToken ? "Submitting Verify Token..." : "Submit Verify Token"}
+              </Button>
+              {verifyTokenSet && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowVerifyTokenField(false)}
+                >
+                  Cancel
+                </Button>
+              )}
+            </div>
+          ) : appConfigSet && longLiveTokenSet && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowVerifyTokenField(true)}
+            >
+              Reset Verify Token
+            </Button>
+          )}
 
           <div className="pt-4 border-t space-y-4">
             <div className="flex items-center justify-between">
@@ -345,7 +470,7 @@ export default function FacebookIntegrationCard() {
                 <Button
                   type="button"
                   onClick={handleConnect}
-                  disabled={!platformId || isUpdating}
+                  disabled={!longLiveTokenSet || !verifyTokenSet || isUpdating}
                 >
                   {isUpdating ? "Connecting..." : "Connect"}
                 </Button>

@@ -26,7 +26,19 @@ export const facebookApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['FacebookIntegration'],
     }),
+    getFacebookIntegrationStatus: builder.query<
+      {
+        app_id_set: boolean;
+        app_secret_set: boolean;
+        long_live_token_set: boolean;
+        verify_token_set: boolean;
+      },
+      void
+    >({
+      query: () => 'integrations/facebook-integration-status/',
+      providesTags: ['FacebookIntegration'],
+    }),
   }),
 });
 
-export const { useSubmitFacebookAppConfigMutation, useSubmitFacebookAccessTokenMutation, useSubmitFacebookVerifyTokenMutation } = facebookApi;
+export const { useSubmitFacebookAppConfigMutation, useSubmitFacebookAccessTokenMutation, useSubmitFacebookVerifyTokenMutation, useGetFacebookIntegrationStatusQuery } = facebookApi;
