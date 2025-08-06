@@ -5,7 +5,7 @@ const PrivacyPolicyPage = () => {
     <div className="container mx-auto p-8">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy for smartchatbot.click</h1>
       <p className="mb-4">
-        This Privacy Policy describes how smartchatbot.click ("we," "us," or "our") collects, uses, and discloses your information when you use our service.
+        This Privacy Policy describes how smartchatbot.click (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and discloses your information when you use our service.
       </p>
 
       <h2 className="text-2xl font-semibold mb-4">Introduction</h2>

@@ -14,6 +14,7 @@ export default function ConnectionStatusBar() {
 
   // Initialize WebSocket connection
   useEffect(() => {
+    
     const initializeConnection = async () => {
       try {
         if (socketManager.getConnectionState() !== "connected") {

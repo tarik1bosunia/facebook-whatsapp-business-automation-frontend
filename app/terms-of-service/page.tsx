@@ -5,7 +5,7 @@ const TermsOfServicePage = () => {
     <div className="container mx-auto p-8">
       <h1 className="text-3xl font-bold mb-6">Terms of Service for smartchatbot.click</h1>
       <p className="mb-4">
-        Welcome to smartchatbot.click! These Terms of Service ("Terms") govern your access to and use of the smartchatbot.click website and services (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms.
+        Welcome to smartchatbot.click! These Terms of Service (&quot;Terms&quot;) govern your access to and use of the smartchatbot.click website and services (collectively, the &quot;Service&quot;). By accessing or using the Service, you agree to be bound by these Terms.
       </p>
 
       <h2 className="text-2xl font-semibold mb-4">1. Rules of Use</h2>
@@ -20,7 +20,7 @@ const TermsOfServicePage = () => {
 
       <h2 className="text-2xl font-semibold mb-4">3. Payment Terms</h2>
       <p className="mb-4">
-        [If applicable, describe your payment terms here. E.g., "Access to certain features of the Service may require payment of fees. All fees are non-refundable. We reserve the right to change our pricing at any time."]
+        [If applicable, describe your payment terms here. E.g., &quot;Access to certain features of the Service may require payment of fees. All fees are non-refundable. We reserve the right to change our pricing at any time.&quot;]
       </p>
 
       <h2 className="text-2xl font-semibold mb-4">4. Limitation of Liability</h2>
