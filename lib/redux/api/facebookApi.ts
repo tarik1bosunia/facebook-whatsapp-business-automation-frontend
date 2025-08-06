@@ -26,19 +26,47 @@ export const facebookApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['FacebookIntegration'],
     }),
+    updateFacebookAutoReplyStatus: builder.mutation<void, { is_send_auto_reply: boolean }>({
+      query: (data) => ({
+        url: 'integrations/update-facebook-auto-reply-status/',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['FacebookIntegration'],
+    }),
+    updateFacebookNotificationStatus: builder.mutation<void, { is_send_notification: boolean }>({
+      query: (data) => ({
+        url: 'integrations/update-facebook-notification-status/',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['FacebookIntegration'],
+    }),
     getFacebookIntegrationStatus: builder.query<
       {
         app_id_set: boolean;
         app_secret_set: boolean;
         long_live_token_set: boolean;
         verify_token_set: boolean;
+        is_connected: boolean;
+        is_send_auto_reply: boolean;
+        is_send_notification: boolean;
       },
       void
     >({
       query: () => 'integrations/facebook-integration-status/',
       providesTags: ['FacebookIntegration'],
     }),
+
+    updateFacebookConnectionStatus: builder.mutation<void, { is_connected: boolean }>({
+      query: (data) => ({
+        url: 'integrations/update-facebook-connection-status/',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['FacebookIntegration'],
+    }),
   }),
 });
 
-export const { useSubmitFacebookAppConfigMutation, useSubmitFacebookAccessTokenMutation, useSubmitFacebookVerifyTokenMutation, useGetFacebookIntegrationStatusQuery } = facebookApi;
+export const { useSubmitFacebookAppConfigMutation, useSubmitFacebookAccessTokenMutation, useSubmitFacebookVerifyTokenMutation, useGetFacebookIntegrationStatusQuery, useUpdateFacebookAutoReplyStatusMutation, useUpdateFacebookNotificationStatusMutation, useUpdateFacebookConnectionStatusMutation } = facebookApi;
