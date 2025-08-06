@@ -7,7 +7,7 @@ import { setCredentials } from "@/lib/redux/features/authSlice";
 import { useAppDispatch } from "../redux/hooks/reduxHooks";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 
-import { socketManager } from "@/lib/websocket/websocketManager";
+// import { socketManager } from "@/lib/websocket/websocketManager";
 import { isErrorResponse, FieldErrorMap } from "@/types/apiResponse";
 import { LoginResponse } from "@/types/auth";
 
@@ -49,7 +49,7 @@ export default function useLogin() {
       // Successful login
       const { access, refresh } = (result as LoginResponse).token;
       dispatch(setCredentials({ refreshToken: refresh, accessToken: access }));
-      socketManager.connect();
+      // socketManager.connect();
       toast.success("Login successful!");
       router.push("/profile");
     } catch (error) {

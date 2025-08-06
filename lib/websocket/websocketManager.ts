@@ -9,6 +9,8 @@ class WebSocketManager {
   public static instance: WebSocketManager;
   private socket: WebSocket | null = null;
 
+  private isConnecting = false;
+
   private constructor() {}
 
   public static getInstance(): WebSocketManager {
@@ -21,11 +23,14 @@ class WebSocketManager {
   public async connect(): Promise<void> {
     if (this.isConnectingOrConnected()) return;
 
+    this.isConnecting = true;
+
     try {
       const validToken = await tokenManager.getValidToken();
       if (!validToken) {
         console.error("WebSocket: No valid token found. Cannot connect.");
         store.dispatch(setConnectionStatus("error"));
+        this.isConnecting = false;
         return;
       }
       console.log("WebSocket: Attempting to connect...");
@@ -38,10 +43,13 @@ class WebSocketManager {
     } catch (error) {
       console.error("WebSocket: Connection attempt failed:", error);
       store.dispatch(setConnectionStatus("error"));
+    }finally{
+      this.isConnecting = false;
     }
   }
 
   private isConnectingOrConnected(): boolean {
+    if (this.isConnecting) return true;
     if (!this.socket) return false;
 
     if (this.socket.readyState === WebSocket.OPEN) {
