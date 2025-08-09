@@ -130,7 +130,7 @@ const OrdersList = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Button>
+          <Button onClick={() => router.push('/orders/create')}>
             <Plus className="h-4 w-4 mr-2" />
             New Order
           </Button>
