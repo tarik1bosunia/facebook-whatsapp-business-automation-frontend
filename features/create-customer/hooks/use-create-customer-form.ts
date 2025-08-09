@@ -105,6 +105,8 @@ export function useCreateCustomerForm() {
         // Reset form on success
         setFormData(initialFormData);
       } catch (err) {
+        // Log the error for debugging, but don't re-throw it
+        // to prevent an uncaught promise rejection.
         console.error('Submission failed:', err);
       }
     };

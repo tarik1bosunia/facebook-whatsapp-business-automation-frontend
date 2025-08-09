@@ -1,4 +1,32 @@
-import { useState } from "react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+
+type ApiError = {
+  detail?: string;
+};
+
+// This function now ONLY looks for a top-level 'detail' message.
+// All field-specific errors are handled by their respective components.
+const getGeneralErrorMessage = (error: unknown): string | null => {
+  if (!error) return null;
+
+  const apiError = error as { data?: ApiError };
+  if (apiError.data?.detail) {
+    return apiError.data.detail;
+  }
+
+  // Fallback for non-API or unexpected errors
+  if (error instanceof Error) {
+    return error.message;
+  }
+  
+  // Only show a generic message if no other error type is identified.
+  const hasFieldErrors = error as { data?: { errors?: unknown } };
+  if (!apiError.data && !hasFieldErrors.data?.errors) {
+      return "An unexpected error occurred. Please try again.";
+  }
+
+  return null;
+};
 
 export default function FormStatus({
   isSuccess,
@@ -9,77 +37,24 @@ export default function FormStatus({
   isError: boolean;
   error: unknown;
 }) {
-  const [showError, setShowError] = useState(true);
+  const errorMessage = getGeneralErrorMessage(error);
 
-  const getErrorMessage = (error: unknown): string => {
-    if (typeof error === "string") return error;
-    if (error instanceof Error) return error.message;
-    if (typeof error === "object" && error !== null) {
-      if ("social_media_ids" in error) {
-        return (error as any).social_media_ids as string;
-      }
-      return JSON.stringify(error, null, 2);
-    }
-    return "An unknown error occurred";
-  };
-
-  const errorMessage = isError ? getErrorMessage(error) : "";
+  if (!isSuccess && !isError) return null;
 
   return (
-    <>
+    <div className="mb-4">
       {isSuccess && (
-        <div className="mb-4 p-3 text-green-800 bg-green-50 rounded-md border border-green-100 flex items-start animate-fade-in">
-          <svg
-            className="h-5 w-5 text-green-500 mr-2 flex-shrink-0"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <div>
-            <h3 className="font-medium">Customer created successfully!</h3>
-            <p className="text-sm mt-1">
-              The new customer has been added to your database.
-            </p>
-          </div>
+        <div className="flex items-center p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+          <CheckCircle2 className="flex-shrink-0 inline w-5 h-5 mr-3" />
+          <span className="font-medium">Success!</span> The new customer has been created.
         </div>
       )}
-
-      {isError && showError && (
-        <div className="relative mt-4 p-3 text-red-800 bg-red-50 rounded-md border border-red-100 flex items-start animate-fade-in">
-          <svg
-            className="h-5 w-5 text-red-500 mr-2 flex-shrink-0 mt-1"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clipRule="evenodd"
-            />
-          </svg>
-
-          <div className="flex-1">
-            <h3 className="font-medium">Error occurred</h3>
-            <div className="text-sm mt-1 font-sans whitespace-pre-line max-h-32 overflow-y-auto pr-1">
-              {errorMessage}
-            </div>
-          </div>
-
-          {/* Close button */}
-          <button
-            onClick={() => setShowError(false)}
-            className="absolute top-2 right-2 text-red-400 hover:text-red-600"
-            aria-label="Close"
-          >
-            ×
-          </button>
+      {isError && errorMessage && (
+        <div className="flex items-center p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+          <AlertCircle className="flex-shrink-0 inline w-5 h-5 mr-3" />
+          <span className="font-medium">Error:</span> {errorMessage}
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { FiSearch, FiX } from "react-icons/fi";
+import { FiSearch, FiX, FiAlertCircle } from "react-icons/fi";
 import { SocialMediaOption } from "../types";
 
 interface SearchableDropdownProps {
@@ -15,6 +15,7 @@ interface SearchableDropdownProps {
   onClear: () => void;
   hasSelection: boolean;
   placeholder: string;
+  error?: string;
 }
 
 export default function SearchableDropdown({
@@ -30,10 +31,17 @@ export default function SearchableDropdown({
   onClear,
   hasSelection,
   placeholder,
+  error,
 }: SearchableDropdownProps) {
+  const hasError = !!error;
+  const baseRingColor = "focus:ring-blue-500 dark:focus:ring-blue-400";
+  const errorRingColor = "ring-red-500 dark:ring-red-400";
+  const baseBorderColor = "border-gray-300 dark:border-gray-600";
+  const errorBorderColor = "border-red-500 dark:border-red-400";
+
   return (
-    <div className="space-y-1 relative dropdown-container">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+    <div className="space-y-1.5 relative dropdown-container">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           {icon}
@@ -43,9 +51,13 @@ export default function SearchableDropdown({
           value={value}
           onClick={onFocus}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm cursor-text transition duration-150 ease-in-out"
+          className={`block w-full pl-10 pr-10 py-2.5 border rounded-lg leading-5 bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-2 sm:text-sm transition duration-150 ease-in-out ${
+            hasError ? `${errorBorderColor} ${errorRingColor}` : `${baseBorderColor} ${baseRingColor}`
+          }`}
           placeholder={placeholder}
           readOnly={hasSelection}
+          aria-invalid={hasError}
+          aria-describedby={hasError ? `${label}-error` : undefined}
         />
         {hasSelection ? (
           <button
@@ -61,8 +73,14 @@ export default function SearchableDropdown({
           </div>
         )}
       </div>
+      {hasError && (
+        <p id={`${label}-error`} className="flex items-center text-xs text-red-600 dark:text-red-400 mt-1">
+          <FiAlertCircle className="w-4 h-4 mr-1.5" />
+          {error}
+        </p>
+      )}
       {showDropdown && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto transition-all duration-200 ease-in-out transform dropdown-container">
+        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto transition-all duration-200 ease-in-out transform dropdown-container">
           {isLoading ? (
             <div className="px-4 py-3 text-gray-500 flex items-center justify-center">
               <svg
@@ -93,18 +111,18 @@ export default function SearchableDropdown({
                 <div
                   key={option.value}
                   onClick={() => onSelect(option.value)}
-                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center transition-colors duration-150 ease-in-out"
+                  className="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center transition-colors duration-150 ease-in-out"
                 >
                   {icon}
-                  <span className="ml-2">{option.label}</span>
+                  <span className="ml-2 text-gray-800 dark:text-gray-200">{option.label}</span>
                 </div>
               ))}
-              <div className="border-t border-gray-200 px-4 py-2 text-xs text-gray-500 bg-gray-50">
+              <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-2 text-xs text-gray-500 bg-gray-50 dark:bg-gray-800/50">
                 {options.length} {options.length === 1 ? "result" : "results"}
               </div>
             </>
           ) : (
-            <div className="px-4 py-3 text-gray-500">No results found</div>
+            <div className="px-4 py-3 text-gray-500 dark:text-gray-400">No results found</div>
           )}
         </div>
       )}

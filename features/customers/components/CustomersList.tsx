@@ -47,7 +47,6 @@ const CustomersList = ({ customers = [] }: CustomersListProps) => {
       (filterStatus === "all" || customer.status === filterStatus) &&
       (filterChannel === "all" || customer.channel === filterChannel) &&
       (customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
        customer.phone.includes(searchTerm))
   );
   const router = useRouter();
