@@ -5,7 +5,7 @@ import SearchableDropdown from "@/features/create-customer/components/Searchable
 import SubmitButton from "@/features/create-customer/components/SubmitButton";
 import TextInput from "@/features/create-customer/components/TextInput";
 import { useCreateCustomerForm } from "@/features/create-customer/hooks/use-create-customer-form";
-import { FiFacebook, FiMail, FiMessageSquare, FiPhone, FiUser } from "react-icons/fi";
+import { FiFacebook, FiMessageSquare, FiPhone, FiUser } from "react-icons/fi";
 
 export default function CreateCustomerPage() {
   const {
@@ -78,16 +78,6 @@ export default function CreateCustomerPage() {
                     required
                   />
 
-                  <TextInput
-                    icon={<FiMail />}
-                    label="Email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="john@example.com"
-                    required
-                  />
 
                   <TextInput
                     icon={<FiPhone />}
@@ -98,6 +88,32 @@ export default function CreateCustomerPage() {
                     onChange={handleInputChange}
                     placeholder="+8801712345678"
                     required
+                  />
+                  <TextInput
+                    icon={<FiUser />}
+                    label="City"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    placeholder="Dhaka"
+                    required
+                  />
+                  <TextInput
+                    icon={<FiUser />}
+                    label="Police Station"
+                    name="police_station"
+                    value={formData.police_station}
+                    onChange={handleInputChange}
+                    placeholder="Gulshan"
+                    required
+                  />
+                  <TextInput
+                    icon={<FiUser />}
+                    label="Area"
+                    name="area"
+                    value={formData.area || ''}
+                    onChange={handleInputChange}
+                    placeholder="Banani"
                   />
                 </div>
 

@@ -1,5 +1,6 @@
 import { useGetUsersByPlatformQuery } from "@/lib/redux/services/conversationApi";
 import { useCreateCustomerMutation } from "@/lib/redux/services/customerApi";
+import { NewCustomer } from "@/types/customer";
 import { useState } from "react";
 
 interface SocialMediaOption {
@@ -9,21 +10,27 @@ interface SocialMediaOption {
 
 interface FormData {
   name: string;
-  email: string;
   phone: string;
   facebookId: string;
   whatsappId: string;
+  city: string;
+  police_station: string;
+  area?: string
 }
 
 export function useCreateCustomerForm() {
-      // Form state management
-      const [formData, setFormData] = useState<FormData>({
+
+    const initialFormData: FormData = {
         name: '',
-        email: '',
         phone: '',
         facebookId: '',
         whatsappId: '',
-      });
+        city: '',
+        police_station: '',
+        area: ''
+      }
+      // Form state management
+      const [formData, setFormData] = useState<FormData>(initialFormData);
 
         // Search and dropdown states
         const [facebookSearch, setFacebookSearch] = useState('');
@@ -81,26 +88,22 @@ export function useCreateCustomerForm() {
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
   
-      const payload = {
+      const payload: NewCustomer = {
         name: formData.name,
-        email: formData.email,
         phone: formData.phone,
+        city: formData.city,
+        police_station: formData.police_station,
+        area: formData.area || null,
         social_media_ids: [
           ...(formData.facebookId ? [{ facebook: formData.facebookId }] : []),
           ...(formData.whatsappId ? [{ whatsapp: formData.whatsappId }] : []),
-        ],
+        ].filter(Boolean),
       };
   
       try {
         await createCustomer(payload).unwrap();
         // Reset form on success
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          facebookId: '',
-          whatsappId: '',
-        });
+        setFormData(initialFormData);
       } catch (err) {
         console.error('Submission failed:', err);
       }
