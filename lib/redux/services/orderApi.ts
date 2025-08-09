@@ -1,5 +1,5 @@
 
-import { CustomerData, CustomerCreateResponse, ApiErrorResponse } from '@/types';
+import { NewCustomer, CustomerCreateResponse, ApiErrorResponse } from '@/types';
 import { apiSlice } from './../api/apiSlice';
 import { Order } from '@/types/order';
 
@@ -30,7 +30,7 @@ export const orderApi = apiSlice.injectEndpoints({
         }),
         }),
 
-    createOrder: builder.mutation<CustomerCreateResponse, CustomerData>({
+    createOrder: builder.mutation<CustomerCreateResponse, NewCustomer>({
       query: (customerData) => ({
         url: CREATE_ORDER_URL,
         method: 'POST',

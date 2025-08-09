@@ -16,20 +16,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+import { Customer } from "@/types/customer";
 
-export interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  createdAt: string;
-  ordersCount: number;
-  totalSpent: number;
-  lastOrderDate?: string;
-  status: "active" | "inactive";
-  channel: "facebook" | "whatsapp" | "both";
-  avatar?: string;
-}
 
 
 
@@ -188,7 +176,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
           <div>
             <CardTitle className="text-base">{customer.name}</CardTitle>
             <p className="text-sm text-muted-foreground">
-              Customer since {new Date(customer.createdAt).toLocaleDateString()}
+              Customer since {new Date(customer.created_at).toLocaleDateString()}
             </p>
           </div>
         </div>
@@ -223,25 +211,30 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
       <CardContent>
         <div className="grid grid-cols-2 gap-2 mb-4">
           <div>
-            <p className="text-xs text-muted-foreground">Email:</p>
-            <p className="text-sm truncate">{customer.email}</p>
-          </div>
-          <div>
             <p className="text-xs text-muted-foreground">Phone:</p>
             <p className="text-sm">{customer.phone}</p>
+          </div>
+            <div>
+            <p className="text-xs text-muted-foreground">City:</p>
+            <p className="text-sm">{customer.city}</p>
+          </div>
+
+          <div>
+            <p className="text-xs text-muted-foreground">Police Station:</p>
+            <p className="text-sm">{customer.police_station}</p>
           </div>
         </div>
         
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs text-muted-foreground">Orders:</p>
-            <p className="text-sm font-medium">{customer.ordersCount}</p>
+            <p className="text-sm font-medium">{customer.orders_count}</p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Total Spent:</p>
             <p className="text-sm font-medium">
               {/* ${customer.totalSpent.toFixed(2)} */}
-              ${customer.totalSpent}
+              ${customer.total_spent}
             </p>
           </div>
           <div>
@@ -267,9 +260,9 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
               </Badge>
             )}
           </div>
-          {customer.lastOrderDate && (
+          {customer.last_order_date && (
             <p className="text-xs text-muted-foreground">
-              Last order: {customer.lastOrderDate}
+              Last order: {customer.last_order_date}
             </p>
           )}
         </div>
