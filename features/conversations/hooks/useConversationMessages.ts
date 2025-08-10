@@ -40,7 +40,6 @@ export default function useConversationMessages(conversationId?: string) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [mergedMessages]);
 
-  // TODO: I can completely remove it & sent message using websocket in future
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !conversationId) return;
     const messageToSend = newMessage.trim();
@@ -66,7 +65,7 @@ export default function useConversationMessages(conversationId?: string) {
     dispatch(addMessage({conversationId, message: {
       id: `ws-${Date.now()}`,
       text: messageToSend,
-      time: `${Date.now()}`,
+      time: new Date().toISOString(),
       sender: "business"
     }}))
 
