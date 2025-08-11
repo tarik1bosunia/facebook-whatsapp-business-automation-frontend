@@ -17,7 +17,6 @@ import {
 import useBusinessProfile from '@/lib/hooks/useBusinessProfile';
 import useBusinessHours from '@/lib/hooks/useBusinessHours';
 import Spinner from '@/components/ui/Spinner';
-import TimeRangeSlider from '@/components/ui/TimeRangeSlider';
 import { BusinessHour } from '@/types/business';
 
 function BusinessProfileCard() {
@@ -100,16 +99,6 @@ function BusinessProfileCard() {
   );
 }
 
-const formatTime = (timeString: string | null): string => {
-  if (!timeString) {
-    return "N/A";
-  }
-  const [hours, minutes] = timeString.split(':');
-  const date = new Date();
-  date.setHours(parseInt(hours, 10));
-  date.setMinutes(parseInt(minutes, 10));
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-};
 
 function BusinessHoursCard() {
   const {
@@ -119,7 +108,8 @@ function BusinessHoursCard() {
     handleHourChange,
     handleCopyToAll,
     handleSaveHours,
-    timeToNumber,
+    handleAddHour,
+    handleRemoveHour,
   } = useBusinessHours();
 
   if (isLoading) {
@@ -135,46 +125,75 @@ function BusinessHoursCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {hoursForm.map((entry: BusinessHour) => (
+        {hoursForm.map((entry: BusinessHour, index: number) => (
           <div
-            key={entry.day}
-            className="grid grid-cols-[100px_1fr_200px_auto_auto] items-center gap-4"
+            key={index}
+            className="grid grid-cols-[120px_1fr_200px_auto_auto_auto] items-center gap-4"
           >
-            <span className="font-semibold">{entry.day}</span>
-            <TimeRangeSlider
-              value={[
-                timeToNumber(entry.open_time || '00:00'),
-                timeToNumber(entry.close_time || '00:00'),
-              ]}
-              onChange={(value) => handleHourChange(entry.day, 'open_time', value)}
-              disabled={entry.is_closed}
+            <Input
+              value={entry.day}
+              onChange={(e) => handleHourChange(index, 'day', e.target.value)}
+              placeholder="Day"
+              className="w-full"
             />
+            <div className="flex items-center gap-2">
+              <Input
+                type="time"
+                value={entry.open_time || ''}
+                onChange={(e) =>
+                  handleHourChange(index, 'open_time', e.target.value)
+                }
+                disabled={entry.is_closed}
+              />
+              <span>-</span>
+              <Input
+                type="time"
+                value={entry.close_time || ''}
+                onChange={(e) =>
+                  handleHourChange(index, 'close_time', e.target.value)
+                }
+                disabled={entry.is_closed}
+              />
+            </div>
             <div className="text-sm text-gray-500">
-              {entry.is_closed
-                ? 'Closed'
-                : `${formatTime(entry.open_time)} - ${formatTime(
-                    entry.close_time
-                  )}`}
+              {entry.is_closed ? 'Closed' : ''}
             </div>
             <div className="flex items-center gap-2">
-              <FormLabel htmlFor={`closed-${entry.day}`}>Closed</FormLabel>
+              <FormLabel htmlFor={`closed-${index}`}>Closed</FormLabel>
               <Switch
-                id={`closed-${entry.day}`}
+                id={`closed-${index}`}
                 checked={entry.is_closed}
                 onCheckedChange={(checked) =>
-                  handleHourChange(entry.day, 'is_closed', checked)
+                  handleHourChange(index, 'is_closed', checked)
                 }
               />
             </div>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleCopyToAll(entry.day)}
+              onClick={() => handleCopyToAll(index)}
             >
               Copy to all
             </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => handleRemoveHour(index)}
+            >
+              Remove
+            </Button>
           </div>
         ))}
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleAddHour}
+            className="mt-4"
+          >
+            Add Business Hour
+          </Button>
+        </div>
       </CardContent>
       <CardFooter className="flex justify-end">
         <Button onClick={handleSaveHours} disabled={isUpdatingHours}>

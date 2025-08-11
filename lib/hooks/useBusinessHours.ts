@@ -24,27 +24,15 @@ export default function useBusinessHours() {
     }
   }, [businessHours]);
 
-  const numberToTime = (totalMinutes: number): string => {
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
-  };
 
   const handleHourChange = (
-    day: string,
+    index: number,
     field: keyof BusinessHour,
-    value: string | boolean | number[],
+    value: string | boolean,
   ) => {
     setHoursForm((prev) =>
-      prev.map((hour) => {
-        if (hour.day === day) {
-          if (Array.isArray(value) && typeof value[0] === 'number' && typeof value[1] === 'number') {
-            return {
-              ...hour,
-              open_time: numberToTime(value[0]),
-              close_time: numberToTime(value[1]),
-            };
-          }
+      prev.map((hour, i) => {
+        if (i === index) {
           return { ...hour, [field]: value };
         }
         return hour;
@@ -52,11 +40,19 @@ export default function useBusinessHours() {
     );
   };
 
-  const handleCopyToAll = (fromDay: string) => {
-    const sourceHour = hoursForm.find((h) => h.day === fromDay);
+  const handleCopyToAll = (fromIndex: number) => {
+    const sourceHour = hoursForm[fromIndex];
     if (sourceHour) {
       setHoursForm(hoursForm.map(h => ({ ...h, open_time: sourceHour.open_time, close_time: sourceHour.close_time, is_closed: sourceHour.is_closed })));
     }
+  };
+
+  const handleAddHour = () => {
+    setHoursForm([...hoursForm, { day: '', open_time: '09:00', close_time: '17:00', is_closed: false }]);
+  };
+
+  const handleRemoveHour = (index: number) => {
+    setHoursForm(hoursForm.filter((_, i) => i !== index));
   };
 
   const handleSaveHours = async () => {
@@ -69,11 +65,6 @@ export default function useBusinessHours() {
     }
   };
 
-  const timeToNumber = (time: string | null): number => {
-    if (!time) return 0;
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 60 + minutes;
-  };
 
   return {
     hoursForm,
@@ -82,6 +73,7 @@ export default function useBusinessHours() {
     handleHourChange,
     handleCopyToAll,
     handleSaveHours,
-    timeToNumber,
+    handleAddHour,
+    handleRemoveHour,
   };
 }
