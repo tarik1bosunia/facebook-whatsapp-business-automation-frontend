@@ -11,198 +11,186 @@ import {
   Button,
   Input,
   Textarea,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   FormLabel,
+  Switch,
 } from '@/components/ui';
-import useBusinessSettings from '@/lib/hooks/useBusinessSettings';
+import useBusinessProfile from '@/lib/hooks/useBusinessProfile';
+import useBusinessHours from '@/lib/hooks/useBusinessHours';
+import Spinner from '@/components/ui/Spinner';
+import TimeRangeSlider from '@/components/ui/TimeRangeSlider';
+import { BusinessHour } from '@/types/business';
 
-export default function BusinessSettings() {
+function BusinessProfileCard() {
   const {
-    isProfileLoading,
-    isHoursLoading,
-    form,
-    setForm,
-    handleSave,
+    profileForm,
+    isLoading,
+    isUpdatingProfile,
+    handleInputChange,
     handleSaveProfile,
-    handleSaveHours,
-    hourForm,
-    setHourForm,
-    weekDays,
-    timeOptions,
-  } = useBusinessSettings();
+  } = useBusinessProfile();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <TabsContent value="business" className="space-y-4">
-      {/* Business Profile Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Business Information</CardTitle>
-          <CardDescription>
-            Update your business details and profile information
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <FormLabel>Business Name</FormLabel>
-              <Input
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Your Business Name"
-              />
-            </div>
-            <div className="space-y-2">
-              <FormLabel>Business Email</FormLabel>
-              <Input
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="contact@example.com"
-              />
-            </div>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <FormLabel>Phone Number</FormLabel>
-              <Input
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                placeholder="+1 (555) 123-4567"
-              />
-            </div>
-            <div className="space-y-2">
-              <FormLabel>Website</FormLabel>
-              <Input
-                value={form.website}
-                onChange={(e) => setForm({ ...form, website: e.target.value })}
-                placeholder="https://example.com"
-              />
-            </div>
-          </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Business Information</CardTitle>
+        <CardDescription>
+          Update your business details and profile information
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <FormLabel>Business Description</FormLabel>
-            <Textarea
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-              placeholder="Describe your business..."
-              rows={4}
+            <FormLabel>Business Name</FormLabel>
+            <Input
+              value={profileForm.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              placeholder="Your Business Name"
             />
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button onClick={handleSaveProfile} disabled={isProfileLoading}>
-            {isProfileLoading && (
-              <svg
-                className="animate-spin mr-2 h-4 w-4"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="none"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-            )}
-            Save Changes
-          </Button>
-        </CardFooter>
-      </Card>
+          <div className="space-y-2">
+            <FormLabel>Business Email</FormLabel>
+            <Input
+              value={profileForm.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              placeholder="contact@example.com"
+            />
+          </div>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <FormLabel>Phone Number</FormLabel>
+            <Input
+              value={profileForm.phone}
+              onChange={(e) => handleInputChange('phone', e.target.value)}
+              placeholder="+1 (555) 123-4567"
+            />
+          </div>
+          <div className="space-y-2">
+            <FormLabel>Website</FormLabel>
+            <Input
+              value={profileForm.website || ''}
+              onChange={(e) => handleInputChange('website', e.target.value)}
+              placeholder="https://example.com"
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <FormLabel>Business Description</FormLabel>
+          <Textarea
+            value={profileForm.description || ''}
+            onChange={(e) =>
+              handleInputChange('description', e.target.value)
+            }
+            placeholder="Describe your business..."
+            rows={4}
+          />
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-end">
+        <Button onClick={handleSaveProfile} disabled={isUpdatingProfile}>
+          {isUpdatingProfile && <Spinner />}
+          Save Changes
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
 
-      {/* Business Hours Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Business Hours</CardTitle>
-          <CardDescription>
-            Set your regular business hours for customer support
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {weekDays.map((day) => {
-            const entry = hourForm[day] || {
-              open_time: '',
-              close_time: '',
-              is_closed: false,
-            };
+const formatTime = (timeString: string | null): string => {
+  if (!timeString) {
+    return "N/A";
+  }
+  const [hours, minutes] = timeString.split(':');
+  const date = new Date();
+  date.setHours(parseInt(hours, 10));
+  date.setMinutes(parseInt(minutes, 10));
+  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+};
 
-            return (
-              <div
-                key={day}
-                className="grid grid-cols-[100px_1fr] items-center gap-4"
-              >
-                <span>{day}</span>
-                <div className="flex items-center gap-2">
-                  <Select
-                    value={entry.open_time ?? ''}
-                    onValueChange={(val) =>
-                      setHourForm((prev) => ({
-                        ...prev,
-                        [day]: {
-                          ...prev[day],
-                          open_time: val,
-                        },
-                      }))
-                    }
-                  >
-                    <SelectTrigger className="w-[100px]">
-                      <SelectValue placeholder="Start" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {timeOptions.map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <span>to</span>
-                  <Select
-                    value={entry.close_time ?? ''}
-                    onValueChange={(val) =>
-                      setHourForm((prev) => ({
-                        ...prev,
-                        [day]: {
-                          ...prev[day],
-                          close_time: val,
-                        },
-                      }))
-                    }
-                  >
-                    <SelectTrigger className="w-[100px]">
-                      <SelectValue placeholder="End" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {timeOptions.map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            );
-          })}
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button onClick={handleSaveHours} disabled={isHoursLoading}>
-            Save Changes
-          </Button>
-        </CardFooter>
-      </Card>
+function BusinessHoursCard() {
+  const {
+    hoursForm,
+    isLoading,
+    isUpdatingHours,
+    handleHourChange,
+    handleCopyToAll,
+    handleSaveHours,
+    timeToNumber,
+  } = useBusinessHours();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Business Hours</CardTitle>
+        <CardDescription>
+          Set your regular business hours for customer support
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {hoursForm.map((entry: BusinessHour) => (
+          <div
+            key={entry.day}
+            className="grid grid-cols-[100px_1fr_200px_auto_auto] items-center gap-4"
+          >
+            <span className="font-semibold">{entry.day}</span>
+            <TimeRangeSlider
+              value={[
+                timeToNumber(entry.open_time || '00:00'),
+                timeToNumber(entry.close_time || '00:00'),
+              ]}
+              onChange={(value) => handleHourChange(entry.day, 'open_time', value)}
+              disabled={entry.is_closed}
+            />
+            <div className="text-sm text-gray-500">
+              {entry.is_closed
+                ? 'Closed'
+                : `${formatTime(entry.open_time)} - ${formatTime(
+                    entry.close_time
+                  )}`}
+            </div>
+            <div className="flex items-center gap-2">
+              <FormLabel htmlFor={`closed-${entry.day}`}>Closed</FormLabel>
+              <Switch
+                id={`closed-${entry.day}`}
+                checked={entry.is_closed}
+                onCheckedChange={(checked) =>
+                  handleHourChange(entry.day, 'is_closed', checked)
+                }
+              />
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleCopyToAll(entry.day)}
+            >
+              Copy to all
+            </Button>
+          </div>
+        ))}
+      </CardContent>
+      <CardFooter className="flex justify-end">
+        <Button onClick={handleSaveHours} disabled={isUpdatingHours}>
+          {isUpdatingHours && <Spinner />}
+          Save Changes
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+
+export default function BusinessSettings() {
+  return (
+    <TabsContent value="business" className="space-y-4">
+      <BusinessProfileCard />
+      <BusinessHoursCard />
     </TabsContent>
   );
 }
